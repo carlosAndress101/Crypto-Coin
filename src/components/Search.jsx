@@ -48,7 +48,7 @@ const SearchInput = ({handleSearch}) =>{
 
             {
               searchData ?  searchData.map(coint => {
-                return <li key={coint.id} className="flex items-center ml-4 my-2 cursor-pointer" onClick={()=> selectCoin()}>
+                return <li key={coint.id} className="flex items-center ml-4 my-2 cursor-pointer" onClick={()=> selectCoin(coint.id)}>
                 <img src={coint.thumb} alt={coint.name} className="w-[1rem] h-[1rem] mx-1.5"/>
                 <span>{coint.name}</span>
               </li>
