@@ -4,10 +4,11 @@ import { useState } from "react";
 import { CryptoContext } from "../context/CryptoContext";
 import debounce from "lodash.debounce";
 
+// eslint-disable-next-line react/prop-types
 const SearchInput = ({handleSearch}) =>{
 
   const [searchText, setSearchText] = useState("");
-  let {searchData} = useContext(CryptoContext);
+  let {searchData, setCoinSearch, setSearchData} = useContext(CryptoContext);
 
   let handleInput = (e) => {
     e.preventDefault();
@@ -15,6 +16,12 @@ const SearchInput = ({handleSearch}) =>{
     setSearchText(query);
     handleSearch(query)
   };
+
+  const selectCoin = (coin) =>{
+    setCoinSearch(coin);
+    setSearchText("");
+    setSearchData();
+  }
 
   return(
     <>
@@ -41,7 +48,7 @@ const SearchInput = ({handleSearch}) =>{
 
             {
               searchData ?  searchData.map(coint => {
-                return <li key={coint.id} className="flex items-center ml-4 my-2 cursor-pointer">
+                return <li key={coint.id} className="flex items-center ml-4 my-2 cursor-pointer" onClick={()=> selectCoin()}>
                 <img src={coint.thumb} alt={coint.name} className="w-[1rem] h-[1rem] mx-1.5"/>
                 <span>{coint.name}</span>
               </li>
