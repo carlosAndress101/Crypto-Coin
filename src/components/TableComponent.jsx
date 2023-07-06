@@ -7,6 +7,7 @@ function TableComponent() {
   let { cryptoData, currency } = useContext(CryptoContext);
 
   return (
+    <>
     <div className="flex flex-col mt-9 border border-gray-100 rounded">
       {cryptoData ? (
         <table className="w-full table-auto">
@@ -75,8 +76,12 @@ function TableComponent() {
           </tbody>
         </table>
       ) : null}
-      <Pagination/>
     </div>
+    <div className="flex items-center justify-between mt-4 capitalize h-[2rem]">
+      <span>Data Provided By <a className="text-cyan" href="https://www.coingecko.com/" rel="noreferrer" target="_blank">CoinGecko</a></span>
+       <Pagination/>
+    </div>
+    </>
   );
 }
 
