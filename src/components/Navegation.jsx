@@ -24,7 +24,7 @@ function Navegation() {
                    border-0 cursor-pointer rounded capitalize font-semibold`;
           }}
       >
-        Trending
+        Trending 
       </NavLink>
       <NavLink
         to="/saved"

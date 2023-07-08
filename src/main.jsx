@@ -6,6 +6,7 @@ import Trending from "./pages/Trending";
 import Saved from "./pages/Saved";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import CryptoDetails from "./components/CryptoDetails";
 
 
 const router = createBrowserRouter([
@@ -15,7 +16,13 @@ const router = createBrowserRouter([
     children:[
       {
         path:"/",
-        element:<Crypto/>
+        element:<Crypto/>,
+        children:[
+          {
+            path:":coinId",
+            element: <CryptoDetails/>
+          }
+        ]
       },
       {
         path:"/trending",

@@ -9,12 +9,27 @@ export const CryptoContext = createContext({});
 export const CryptoProvider = ({ children }) => {
   const [cryptoData, setCryptoData] = useState();
   const [searchData, setSearchData] = useState();
+  const [coinData, setCoinData] = useState();
   const [coinSearch, setCoinSearch] = useState("");
   const [currency, setCurrency] = useState("usd");
   const [sortBy, setSortBy] = useState("market_cap_desc");
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(250);
   const [perPage, setPerPage] = useState(10);
+
+
+  const getCoinData = async (coinId) => {
+    try {
+      const response = await fetch(
+        `https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=true&sparkline=false`
+      );
+      const data = await response.json();
+      console.log("CoinData:",data)
+      setCoinData(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const getCryptoData = async () => {
     try {
@@ -77,7 +92,9 @@ export const CryptoProvider = ({ children }) => {
         totalPage,
         resetFunction,
         setPerPage,
-        perPage
+        perPage,
+        coinData,
+        getCoinData
       }}
     >
       {children}
