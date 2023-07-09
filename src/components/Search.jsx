@@ -30,7 +30,7 @@ const SearchInput = ({handleSearch}) =>{
 
   return(
     <>
-    <form className="w-96 relative flex items-center ml-7 font-nunito" onSubmit={handleSubmit}>
+    <form className="lg:w-[25vw] w-[60vw] sm:w-[47vw] md:w-[78vw] sm:mt-1 lg:mt-1 mt-1 relative flex items-center lg:ml-7  font-nunito" onSubmit={handleSubmit}>
       <input
         type="text"
         name="search"

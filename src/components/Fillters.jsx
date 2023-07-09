@@ -18,8 +18,8 @@ const Currency = () => {
   }
 
   return (
-    <div className="flex mr-7">
-      <form className="relative flex items-center font-nunito mr-12" onSubmit={handleCurrencySubmit}>
+    <div className="flex lg:mr-7 justify-between sm:flex-row flex-col relative xl:mb-4 xl:mt-4 mt-2 mb-2">
+      <form className="relative flex items-center font-nunito md:mr-12 mr-1" onSubmit={handleCurrencySubmit}>
         <label
           htmlFor="currency"
           className="relative flex justify-center items-center mr-2 font-bold">currency:</label>
@@ -29,8 +29,7 @@ const Currency = () => {
           name="currency"
           ref={currencyRef}
           placeholder="usd"
-          className="w-16 rounded bg-gray-200 placeholder:text-gray-100
-         pl-2 required outline-0 border border-transparent focus:border-cyan leading-4"
+          className="w-16 rounded bg-gray-200 placeholder:text-gray-100  placeholder:text-base required outline-0  border border-transparent focus:border-cyan leading-4  sm:text-base text-sm sm:p-0 sm:pl-2 p-1"
         />
 
         <button type="submit" className="ml-1 cursor-pointer">
@@ -52,10 +51,9 @@ const SortBy = () => {
   }
   return(
     <>
-    <label className="relative flex justify-center items-center pr-10">
-      <span className="font-bold mr-2">sort by: </span>
-      <select name="sortby" className="rounded bg-gray-200 text-base 
-      pl-2 pr-10 py-0.5 leading-4 capitalize focus:outline-0" onClick={handleSort}>
+    <label className="relative flex sm:justify-center justify-start items-center lg:mt-0 md:mt-0 sm:mt-0 xl:mb-4 xl:mt-4 mb-0">
+      <span className="mr-1 sm:font-bold font-medium sm:text-base text-sm w-16">sort by: </span>
+      <select name="sortby" className="rounded bg-gray-200 sm:text-base text-sm pl-2 pr-10 py-1.5 focus:outline-0 text-transparent appearance-none capitalize leading-4 w-full sm:w-48" onClick={handleSort}>
       
         <option value="market_cap_desc">Market Cap Desc</option>
         <option value="market_cap_asc">Market Cap Asc</option>
@@ -65,9 +63,9 @@ const SortBy = () => {
         <option value="id_asc">Id Asc</option>
 
       </select>
-      <img src={selectIcon} alt="submit"  className="w-[1rem] h-auto absolute right-10 top-2 pointer-events-none"/>
+      <img src={selectIcon} alt="submit"  className="w-[1rem] h-auto absolute right-10 top-[1.5] pointer-events-none"/>
     </label>
-    <button className="w-[4rem] ml-4 hover:scale-110 transition-all transition-ease relative" onClick={resetFunction}>
+    <button className="w-[3rem] ml-4 hover:scale-110 transition-all transition-ease absolute right-0 top-0 lg:top-0 sm:relative xl:mb-4 bottom-11" onClick={resetFunction}>
     <svg
             xmlns="http://www.w3.org/2000/svg"
             width="1em"
@@ -93,12 +91,14 @@ const SortBy = () => {
 function Fillters() {
   return (
     <div
-      className="w-full h-12 border-2 border-gray-100 rounded-lg flex 
-    items-center justify-between relative"
+      className="w-full lg:h-12 h-full lg:border-2 lg:border-gray-100 border-0 rounded-lg flex 
+    items-center justify-between relative lg:flex-row flex-col lg:items-center lg:justify-between"
     >
       <Search />
+      <div className="flex gap-4">
       <Currency />
       <SortBy/>
+      </div>
     </div>
   );
 }

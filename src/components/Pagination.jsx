@@ -98,7 +98,7 @@ function Pagination() {
           }
           <li><button disabled className='outline-0 bg-cyan hover:text-gray-200 rounded-full w-8 h-8 flex justify-center items-center mx-1.5'>{page}</button></li>
           {
-            (page+1 !== TotalNumber && page !== TotalNumber) ? <li><button className='outline-0 hover:text-cyan rounded-full w-8 h-8 flex justify-center items-center bg-gray-300 mx-1.5'>{page + 1}</button></li> : null
+            (page+1 !== TotalNumber && page !== TotalNumber) ? <li><button onClick={next} className='outline-0 hover:text-cyan rounded-full w-8 h-8 flex justify-center items-center bg-gray-300 mx-1.5'>{page + 1}</button></li> : null
           }
           {
             page+1 !== TotalNumber && page !== TotalNumber ? <li><button onClick={multiStepNext} className='outline-0 hover:text-cyan rounded-full w-8 h-8 flex justify-center items-center text-lg'>...</button></li> : null

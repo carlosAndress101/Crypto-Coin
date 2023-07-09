@@ -19,6 +19,7 @@ export const CryptoProvider = ({ children }) => {
 
 
   const getCoinData = async (coinId) => {
+    setCoinData();
     try {
       const response = await fetch(
         `https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=true&sparkline=false`
@@ -32,15 +33,17 @@ export const CryptoProvider = ({ children }) => {
   };
 
   const getCryptoData = async () => {
-    try {
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/list`
-      );
-      const data = await response.json();
-      setTotalPage(data.length);
-    } catch (error) {
-      console.error(error);
-    }
+    setCryptoData();
+    setTotalPage(13220)
+    // try {
+    //   const response = await fetch(
+    //     `https://api.coingecko.com/api/v3/coins/list`
+    //   );
+    //   const data = await response.json();
+    //   setTotalPage(data.length);
+    // } catch (error) {
+    //   console.error(error);
+    // }
 
     try {
       const response = await fetch(

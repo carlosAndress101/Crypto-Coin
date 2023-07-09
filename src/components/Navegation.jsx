@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 function Navegation() {
   return (
-    <nav className="w-[40%] mt-16 flex justify-around align-middle border border-cyan rounded-lg">
+    <nav className="w-[40%] mt-16 flex justify-around align-middle border border-cyan rounded-lg lg:w-[40%] sm:w-[80%] w-[90%] flex justify-around align-middle lg:mt-16 sm:mt-24 mt-20 border border-solid border-cyan sm:rounded-lg rounded-md">
       <NavLink
         to="/"
         className={({isActive}) => {
