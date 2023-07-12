@@ -22,7 +22,7 @@ const Currency = () => {
       <form className="relative flex items-center font-nunito md:mr-12 mr-1" onSubmit={handleCurrencySubmit}>
         <label
           htmlFor="currency"
-          className="relative flex justify-center items-center mr-2 font-bold">currency:</label>
+          className="relative flex justify-center items-center mr-2 font-bold md:text-sm sm:text-sm lg:text-base text-sm">currency:</label>
 
         <input
           type="text"
@@ -51,27 +51,27 @@ const SortBy = () => {
   }
   return(
     <>
-    <label className="relative flex sm:justify-center justify-start items-center lg:mt-0 md:mt-0 sm:mt-0 xl:mb-4 xl:mt-4 mb-0">
-      <span className="mr-1 sm:font-bold font-medium sm:text-base text-sm w-16">sort by: </span>
+    <label className="relative flex sm:justify-center justify-start items-center mt-4 sm:mt-0">
+      <span className="mr-1 sm:font-bold font-medium md:text-sm sm:text-sm lg:text-base text-sm w-16">sort by: </span>
       <select name="sortby" className="rounded bg-gray-200 sm:text-base text-sm pl-2 pr-10 py-1.5 focus:outline-0 text-transparent appearance-none capitalize leading-4 w-full sm:w-48" onClick={handleSort}>
       
-        <option value="market_cap_desc">Market Cap Desc</option>
-        <option value="market_cap_asc">Market Cap Asc</option>
-        <option value="volume_desc">Volume Desc</option>
-        <option value="volume_asc">Volume Asc</option>
-        <option value="id_desc">Id Desc</option>
-        <option value="id_asc">Id Asc</option>
+        <option className="sm:text-base text-sm" value="market_cap_desc">Market Cap Desc</option>
+        <option className="sm:text-base text-sm" value="market_cap_asc">Market Cap Asc</option>
+        <option className="sm:text-base text-sm" value="volume_desc">Volume Desc</option>
+        <option className="sm:text-base text-sm" value="volume_asc">Volume Asc</option>
+        <option className="sm:text-base text-sm" value="id_desc">Id Desc</option>
+        <option className="sm:text-base text-sm" value="id_asc">Id Asc</option>
 
       </select>
-      <img src={selectIcon} alt="submit"  className="w-[1rem] h-auto absolute right-10 top-[1.5] pointer-events-none"/>
+      <img src={selectIcon} alt="submit"  className="w-[1rem] absolute right-1 top-2 pointer-events-none"/>
     </label>
-    <button className="w-[3rem] ml-4 hover:scale-110 transition-all transition-ease absolute right-0 top-0 lg:top-0 sm:relative xl:mb-4 bottom-11" onClick={resetFunction}>
+    <button className="w-[2rem] ml-4 hover:scale-110 transition-all transition-ease absolute right-0 top-0 sm:relative " onClick={resetFunction}>
     <svg
             xmlns="http://www.w3.org/2000/svg"
             width="1em"
             height="1em"
             viewBox="0 0 24 24"
-            className="w-[30px] h-full fill-cyan"
+            className="w-full h-full fill-cyan"
             style={{
               msTransform: "rotate(360deg)",
               WebkitTransform: "rotate(360deg)",
@@ -91,14 +91,12 @@ const SortBy = () => {
 function Fillters() {
   return (
     <div
-      className="w-full lg:h-12 h-full lg:border-2 lg:border-gray-100 border-0 rounded-lg flex 
-    items-center justify-between relative lg:flex-row flex-col lg:items-center lg:justify-between"
+      className=" w-full lg:h-12 h-full lg:border-2 rounded-lg border-solid lg:border-gray-100 border-0 flex lg:flex-row flex-col lg:items-center lg:justify-between relative align-start justify-between"
     >
       <Search />
-      <div className="flex gap-4">
       <Currency />
       <SortBy/>
-      </div>
+    
     </div>
   );
 }
