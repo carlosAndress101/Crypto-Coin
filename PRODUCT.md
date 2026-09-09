@@ -49,21 +49,26 @@ gráfico solo ofrece 7/14/30 días con intervalo diario.
 
 ## Features (implementadas y verificadas)
 
-| #   | Feature                                                                                 | Dónde vive                                  |
-| --- | --------------------------------------------------------------------------------------- | ------------------------------------------- |
-| F1  | Tabla de mercado paginada, con precio, volumen, cap. de mercado y variación a 1h/24h/7d | `TableComponent.jsx`                        |
-| F2  | Búsqueda de monedas con debounce y selección desde un desplegable                       | `Search.jsx`                                |
-| F3  | Orden por cap. de mercado, volumen o id (asc/desc)                                      | `Fillters.jsx`                              |
-| F4  | Divisa de visualización configurable                                                    | `Fillters.jsx`                              |
-| F5  | Paginación con salto múltiple y tamaño de página ajustable                              | `Pagination.jsx`                            |
-| F6  | Modal de detalle con métricas, sentimiento y enlaces oficiales                          | `CryptoDetails.jsx`                         |
-| F7  | Gráfico de precio / cap. de mercado / volumen a 7, 14 o 30 días                         | `Chart.jsx`                                 |
-| F8  | Monedas en tendencia                                                                    | `Trending.jsx`                              |
-| F9  | Lista de guardados persistente en el navegador                                          | `StorageContext.jsx`                        |
-| F10 | Reinicio de filtros y refresco manual                                                   | `Fillters.jsx`, `Trending.jsx`, `Saved.jsx` |
+| #   | Feature                                                                                 | Dónde vive                                                     |
+| --- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| F1  | Tabla de mercado paginada, con precio, volumen, cap. de mercado y variación a 1h/24h/7d | `components/CoinTable.tsx`                                     |
+| F2  | Búsqueda de monedas con debounce y selección desde un desplegable                       | `features/markets/Search.tsx`                                  |
+| F3  | Orden por cap. de mercado, volumen o id (asc/desc)                                      | `features/markets/Filters.tsx`                                 |
+| F4  | Divisa de visualización configurable                                                    | `features/markets/Filters.tsx`                                 |
+| F5  | Paginación por cursor con tamaño de página ajustable                                    | `features/markets/Pagination.tsx`                              |
+| F6  | Modal de detalle con métricas y enlaces oficiales                                       | `features/coin-details/CoinDetailsDialog.tsx`                  |
+| F7  | Gráfico de precio / cap. de mercado / volumen a 7, 14 o 30 días                         | `features/coin-details/PriceChart.tsx`                         |
+| F8  | Monedas en tendencia                                                                    | `features/trending/TrendingPage.tsx`                           |
+| F9  | Lista de guardados persistente en el navegador                                          | `app/WatchlistProvider.tsx`                                    |
+| F10 | Reinicio de filtros y refresco manual                                                   | `features/markets/Filters.tsx`, `components/RefreshButton.tsx` |
+| F11 | Vistas filtradas compartibles y marcables: los filtros viven en la URL                  | `app/search.ts`, `features/markets/useMarketsFilters.ts`       |
 
-El modal (F6) es accesible desde **las tres** vistas de lista mediante la misma ruta hija
-`:coinId` repetida en cada una.
+El modal (F6) es accesible desde **las tres** vistas de lista, cada una con su propia ruta
+hija `$coinId`, de modo que la lista de origen permanece detrás.
+
+**F5 ya no incluye "saltar a la última página".** Ese control se basaba en un total de
+páginas escrito a mano, así que apuntaba a una página inventada; CoinGecko no publica un
+total en `/coins/markets`. Ver el cambio que rompe compatibilidad en `CHANGELOG.md` → 0.1.0.
 
 ---
 

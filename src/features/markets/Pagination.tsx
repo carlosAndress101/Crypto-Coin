@@ -1,10 +1,56 @@
 import { useId, useState } from "react";
-import { useMarketsFilters } from "@/features/markets/MarketsProvider";
+import { useMarketsFilters } from "@/features/markets/useMarketsFilters";
 
 interface PaginationProps {
   /** Filas devueltas por la página actual: así se sabe si hay una siguiente. */
   resultCount: number;
   isFetching: boolean;
+}
+
+/**
+ * Campo de tamaño de página. Igual que el de divisa, se monta con `key={committed}` para
+ * que el borrador no se quede desfasado cuando el valor cambia desde la URL —por ejemplo
+ * al pulsar Atrás, o al abrir un enlace con `?perPage=50`—.
+ */
+function PerPageField({
+  committed,
+  onCommit,
+}: {
+  committed: number;
+  onCommit: (v: number) => void;
+}) {
+  const [draft, setDraft] = useState(String(committed));
+  const inputId = useId();
+
+  return (
+    <form
+      className="flex items-center gap-2"
+      onSubmit={(event) => {
+        event.preventDefault();
+        const parsed = Number(draft);
+        if (Number.isFinite(parsed) && parsed >= 1) onCommit(parsed);
+      }}
+    >
+      <label htmlFor={inputId} className="font-bold">
+        Per page:
+      </label>
+      <input
+        id={inputId}
+        type="number"
+        min={1}
+        max={250}
+        value={draft}
+        onChange={(event) => setDraft(event.target.value)}
+        className="w-20 rounded border border-transparent bg-surface-control px-2 py-1 text-fg outline-0 focus:border-accent"
+      />
+      <button
+        type="submit"
+        className="rounded bg-surface-control px-3 py-1 font-semibold transition-colors hover:text-accent"
+      >
+        Apply
+      </button>
+    </form>
+  );
 }
 
 /**
@@ -21,41 +67,13 @@ interface PaginationProps {
  */
 export function Pagination({ resultCount, isFetching }: PaginationProps) {
   const { page, perPage, setPage, setPerPage } = useMarketsFilters();
-  const [draft, setDraft] = useState(String(perPage));
-  const perPageId = useId();
 
   const hasNext = resultCount === perPage;
   const hasPrevious = page > 1;
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
-      <form
-        className="flex items-center gap-2"
-        onSubmit={(event) => {
-          event.preventDefault();
-          const parsed = Number(draft);
-          if (Number.isFinite(parsed) && parsed >= 1) setPerPage(parsed);
-        }}
-      >
-        <label htmlFor={perPageId} className="font-bold">
-          Per page:
-        </label>
-        <input
-          id={perPageId}
-          type="number"
-          min={1}
-          max={250}
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
-          className="w-20 rounded border border-transparent bg-surface-control px-2 py-1 text-fg outline-0 focus:border-accent"
-        />
-        <button
-          type="submit"
-          className="rounded bg-surface-control px-3 py-1 font-semibold transition-colors hover:text-accent"
-        >
-          Apply
-        </button>
-      </form>
+      <PerPageField key={perPage} committed={perPage} onCommit={setPerPage} />
 
       <div className="flex items-center gap-3">
         <button

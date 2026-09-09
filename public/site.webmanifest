@@ -1,0 +1,14 @@
+{
+  "name": "Cryptosh1f",
+  "short_name": "Cryptosh1f",
+  "description": "Live cryptocurrency prices, market caps and 7-day trends, plus a watchlist that stays in your browser.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0d10",
+  "theme_color": "#0b0d10",
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" }
+  ]
+}

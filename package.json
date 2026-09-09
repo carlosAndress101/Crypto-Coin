@@ -1,6 +1,6 @@
 {
   "name": "cryptosh1f",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,21 +13,24 @@
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "contrast": "node scripts/check-contrast.mjs",
+    "icons": "node scripts/build-icons.mjs",
     "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm contrast",
     "validate": "pnpm check && pnpm build && pnpm smoke",
     "verify": "pnpm validate && pnpm audit --prod",
     "prepare": "husky",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "test:e2e": "pnpm smoke"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.102.8",
+    "@tanstack/react-router": "^1.170.33",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router": "^8.3.1",
     "recharts": "^3.10.1",
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
     "@tailwindcss/vite": "^4.3.3",
