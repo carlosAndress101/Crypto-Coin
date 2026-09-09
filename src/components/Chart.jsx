@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState, useContext } from "react";
 
 import {
   LineChart,
@@ -10,7 +10,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { useContext } from "react";
 import { CryptoContext } from "../context/CryptoContext";
 
 // eslint-disable-next-line react/prop-types
@@ -18,14 +17,11 @@ function CustomTooltip({ payload, label, active, currency = "usd" }) {
   if (active && payload && payload.length > 0) {
     return (
       <div className="custom-tooltip">
-        <p className="label text-sm text-accent">{`${label} : ${new Intl.NumberFormat(
-          "en-IN",
-          {
-            style: "currency",
-            currency: currency,
-            minimumFractionDigits: 5,
-          }
-        ).format(payload[0].value)}`}</p>
+        <p className="label text-sm text-accent">{`${label} : ${new Intl.NumberFormat("en-IN", {
+          style: "currency",
+          currency: currency,
+          minimumFractionDigits: 5,
+        }).format(payload[0].value)}`}</p>
       </div>
     );
   }
@@ -38,12 +34,7 @@ const ChartComponent = ({ data, currency, type }) => {
   return (
     <ResponsiveContainer height={"90%"}>
       <LineChart width={400} height={400} data={data}>
-        <Line
-          type="monotone"
-          dataKey={type}
-          stroke="#14ffec"
-          strokeWidth={"1px"}
-        />
+        <Line type="monotone" dataKey={type} stroke="#14ffec" strokeWidth={"1px"} />
         <CartesianGrid stroke="#323232" />
         <XAxis dataKey="date" hide />
         <YAxis dataKey={type} hide domain={["auto", "auto"]} />
@@ -62,7 +53,7 @@ const ChartComponent = ({ data, currency, type }) => {
 // eslint-disable-next-line react/prop-types
 const Chart = ({ id }) => {
   const [chartData, setChartData] = useState();
-  let { currency } = useContext(CryptoContext);
+  const { currency } = useContext(CryptoContext);
   const [type, setType] = useState("prices");
   const [days, setDays] = useState(7);
 
@@ -70,14 +61,14 @@ const Chart = ({ id }) => {
     const getChartData = async (id) => {
       try {
         const data = await fetch(
-          `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=${days}&interval=daily`
+          `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=${days}&interval=daily`,
         )
           .then((res) => res.json())
           .then((json) => json);
 
         console.log("chart-data", data);
 
-        let convertedData = data[type].map((item) => {
+        const convertedData = data[type].map((item) => {
           return {
             date: new Date(item[0]).toLocaleDateString(),
             [type]: item[1],
@@ -100,9 +91,7 @@ const Chart = ({ id }) => {
       <div className="flex">
         <button
           className={`text-sm py-0.5 px-1.5 ml-2 rounded capitalize ${
-            type === "prices"
-              ? "bg-accent/25 text-accent"
-              : "bg-surface-control text-fg-muted"
+            type === "prices" ? "bg-accent/25 text-accent" : "bg-surface-control text-fg-muted"
           }`}
           onClick={() => setType("prices")}
         >
@@ -110,9 +99,7 @@ const Chart = ({ id }) => {
         </button>
         <button
           className={`text-sm py-0.5 px-1.5 ml-2 rounded capitalize ${
-            type === "market_caps"
-              ? "bg-accent/25 text-accent"
-              : "bg-surface-control text-fg-muted"
+            type === "market_caps" ? "bg-accent/25 text-accent" : "bg-surface-control text-fg-muted"
           }`}
           onClick={() => setType("market_caps")}
         >

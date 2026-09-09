@@ -26,18 +26,21 @@ accesibilidad) por encima de features nuevas.
 ## Usuarios
 
 ### Primario — el observador de mercado
+
 Sigue un puñado de monedas de forma recurrente. No opera todos los días; quiere comprobar
 estado rápido. **Necesita:** carga rápida, su lista guardada intacta, cifras legibles.
 **Evidencia en el código:** la feature de guardado persiste en `localStorage` bajo la clave
 `coins` y sobrevive a recargas y a cierres del navegador.
 
 ### Secundario — el explorador
+
 Llega sin una moneda en mente. Navega el ranking por capitalización, busca por nombre y abre
 detalles. **Necesita:** buscador tolerante, orden configurable, paginación.
 **Evidencia:** buscador con debounce contra `/search`, 6 modos de orden, `per page` configurable
 de 1 a 250.
 
 ### Anti-usuario — el trader activo
+
 **Este producto no es para él y no debe optimizarse para él.** Los datos no son de tiempo real
 (no hay websockets ni polling), no hay libro de órdenes, ni alertas, ni velas intradía. El
 gráfico solo ofrece 7/14/30 días con intervalo diario.
@@ -46,18 +49,18 @@ gráfico solo ofrece 7/14/30 días con intervalo diario.
 
 ## Features (implementadas y verificadas)
 
-| # | Feature | Dónde vive |
-|---|---|---|
-| F1 | Tabla de mercado paginada, con precio, volumen, cap. de mercado y variación a 1h/24h/7d | `TableComponent.jsx` |
-| F2 | Búsqueda de monedas con debounce y selección desde un desplegable | `Search.jsx` |
-| F3 | Orden por cap. de mercado, volumen o id (asc/desc) | `Fillters.jsx` |
-| F4 | Divisa de visualización configurable | `Fillters.jsx` |
-| F5 | Paginación con salto múltiple y tamaño de página ajustable | `Pagination.jsx` |
-| F6 | Modal de detalle con métricas, sentimiento y enlaces oficiales | `CryptoDetails.jsx` |
-| F7 | Gráfico de precio / cap. de mercado / volumen a 7, 14 o 30 días | `Chart.jsx` |
-| F8 | Monedas en tendencia | `Trending.jsx` |
-| F9 | Lista de guardados persistente en el navegador | `StorageContext.jsx` |
-| F10 | Reinicio de filtros y refresco manual | `Fillters.jsx`, `Trending.jsx`, `Saved.jsx` |
+| #   | Feature                                                                                 | Dónde vive                                  |
+| --- | --------------------------------------------------------------------------------------- | ------------------------------------------- |
+| F1  | Tabla de mercado paginada, con precio, volumen, cap. de mercado y variación a 1h/24h/7d | `TableComponent.jsx`                        |
+| F2  | Búsqueda de monedas con debounce y selección desde un desplegable                       | `Search.jsx`                                |
+| F3  | Orden por cap. de mercado, volumen o id (asc/desc)                                      | `Fillters.jsx`                              |
+| F4  | Divisa de visualización configurable                                                    | `Fillters.jsx`                              |
+| F5  | Paginación con salto múltiple y tamaño de página ajustable                              | `Pagination.jsx`                            |
+| F6  | Modal de detalle con métricas, sentimiento y enlaces oficiales                          | `CryptoDetails.jsx`                         |
+| F7  | Gráfico de precio / cap. de mercado / volumen a 7, 14 o 30 días                         | `Chart.jsx`                                 |
+| F8  | Monedas en tendencia                                                                    | `Trending.jsx`                              |
+| F9  | Lista de guardados persistente en el navegador                                          | `StorageContext.jsx`                        |
+| F10 | Reinicio de filtros y refresco manual                                                   | `Fillters.jsx`, `Trending.jsx`, `Saved.jsx` |
 
 El modal (F6) es accesible desde **las tres** vistas de lista mediante la misma ruta hija
 `:coinId` repetida en cada una.
@@ -85,7 +88,7 @@ El modal (F6) es accesible desde **las tres** vistas de lista mediante la misma 
 3. **La lista de guardados es propiedad del usuario.** Se almacena como un array de ids de moneda
    y nunca se envía a ningún servidor.
 4. **La divisa elegida aplica a todas las cifras monetarias de forma consistente.**
-   *(Hoy se incumple: `Chart.jsx` fuerza USD — corregido en Fase 6.)*
+   _(Hoy se incumple: `Chart.jsx` fuerza USD — corregido en Fase 6.)_
 5. **Una moneda sin datos nunca debe romper la vista.** Los campos opcionales de CoinGecko
    (foro, subreddit, GitHub, Facebook) se ocultan si vienen vacíos.
 
@@ -94,6 +97,7 @@ El modal (F6) es accesible desde **las tres** vistas de lista mediante la misma 
 ## Restricciones
 
 ### R1 — Límite de tasa de CoinGecko (restricción de primer orden)
+
 Sin API key el plan gratuito permite del orden de **10–30 peticiones por minuto**. Es el factor
 que más condiciona la arquitectura:
 
@@ -103,14 +107,17 @@ que más condiciona la arquitectura:
 - Obliga a que los tests usen mocks (MSW) y jamás la API real.
 
 ### R2 — Sin secretos en cliente
+
 Al no haber backend, cualquier credencial embebida sería pública. El producto debe funcionar
 correctamente **sin** API key.
 
 ### R3 — Compatibilidad de navegador
+
 Navegadores modernos con soporte de `localStorage`, `Intl.NumberFormat` y `AbortController`.
 Sin soporte para IE ni navegadores heredados.
 
 ### R4 — Accesibilidad WCAG 2.2 AA
+
 Objetivo de calidad adoptado formalmente. Condiciona la paleta: los tokens de color deben
 alcanzar 4.5:1 para texto normal, lo que obligó a rediseñar el sistema de color.
 
@@ -118,13 +125,13 @@ alcanzar 4.5:1 para texto normal, lo que obligó a rediseñar el sistema de colo
 
 ## Métricas de éxito
 
-| Métrica | Objetivo | Cómo se mide |
-|---|---|---|
-| Lighthouse Performance | ≥ 95 | Lighthouse CI sobre el build de producción |
-| Lighthouse Accessibility | 100 | Lighthouse + axe + verificación de contraste por token |
-| Peticiones por sesión típica | Reducción medible frente a la línea base sin caché | Contador en devtools durante el guion de humo |
-| Errores visibles sin salida | **0** | Ningún estado de fallo puede quedar sin acción de reintento |
-| Tiempo hasta la primera fila de datos | < 2 s en 4G simulada | Lighthouse, trazas de red |
+| Métrica                               | Objetivo                                           | Cómo se mide                                                |
+| ------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------- |
+| Lighthouse Performance                | ≥ 95                                               | Lighthouse CI sobre el build de producción                  |
+| Lighthouse Accessibility              | 100                                                | Lighthouse + axe + verificación de contraste por token      |
+| Peticiones por sesión típica          | Reducción medible frente a la línea base sin caché | Contador en devtools durante el guion de humo               |
+| Errores visibles sin salida           | **0**                                              | Ningún estado de fallo puede quedar sin acción de reintento |
+| Tiempo hasta la primera fila de datos | < 2 s en 4G simulada                               | Lighthouse, trazas de red                                   |
 
 **Criterio de fallo explícito:** si un 429 de CoinGecko deja al usuario ante un spinner sin
 explicación ni reintento, el producto se considera roto aunque no haya excepción en consola.

@@ -82,13 +82,13 @@ El `localStorage` es la fuente de verdad; el estado de React es una proyección.
 
 ## Boundaries — no existen
 
-| Boundary | Estado |
-|---|---|
-| Error de render | **Ninguno.** Una excepción deja pantalla en blanco |
-| Error de red | **Ninguno.** El fallo se traga en un `catch` con `console.error` |
-| Carga | Convención implícita: `data === undefined` significa "cargando" |
+| Boundary        | Estado                                                           |
+| --------------- | ---------------------------------------------------------------- |
+| Error de render | **Ninguno.** Una excepción deja pantalla en blanco               |
+| Error de red    | **Ninguno.** El fallo se traga en un `catch` con `console.error` |
+| Carga           | Convención implícita: `data === undefined` significa "cargando"  |
 
-**La consecuencia crítica:** como los `catch` no escriben estado, *cargando* y *error* son el
+**La consecuencia crítica:** como los `catch` no escriben estado, _cargando_ y _error_ son el
 mismo `undefined`. Un 429 de CoinGecko se renderiza como un spinner permanente.
 
 ---
@@ -114,7 +114,7 @@ mismo `undefined`. Un 429 de CoinGecko se renderiza como un spinner permanente.
 
 ### Por qué existe cada capa
 
-- **`app/`** — separa *qué se compone* de *qué hace cada cosa*. Hoy `main.jsx` mezcla rutas y
+- **`app/`** — separa _qué se compone_ de _qué hace cada cosa_. Hoy `main.jsx` mezcla rutas y
   `Home.jsx` mezcla layout con providers; al separarlo, añadir un provider deja de tocar el layout.
 - **`features/`** — agrupa por dominio y no por tipo de archivo. Hoy entender "guardados" obliga a
   abrir `pages/Saved.jsx`, `context/StorageContext.jsx` y `components/TableComponent.jsx`.
@@ -131,13 +131,13 @@ mismo `undefined`. Un 429 de CoinGecko se renderiza como un spinner permanente.
 
 TanStack Query reemplaza los tres providers de fetching. **Qué resuelve, punto por punto:**
 
-| Problema actual | Cómo se resuelve |
-|---|---|
+| Problema actual           | Cómo se resuelve                                            |
+| ------------------------- | ----------------------------------------------------------- |
 | Un 429 = spinner infinito | `status: 'error'` es un estado real y distinto de `pending` |
 | Sin caché → cuota agotada | Caché por clave; volver a una pestaña no repite la petición |
-| Carrera entre respuestas | Query descarta las respuestas obsoletas por clave |
-| Sin cancelación | `AbortController` inyectado en cada `queryFn` |
-| Sin reintento | Backoff exponencial, sin reintentar en 4xx |
+| Carrera entre respuestas  | Query descarta las respuestas obsoletas por clave           |
+| Sin cancelación           | `AbortController` inyectado en cada `queryFn`               |
+| Sin reintento             | Backoff exponencial, sin reintentar en 4xx                  |
 
 Los contextos **no desaparecen**: `CryptoContext` sigue siendo el dueño del estado de UI
 (divisa, orden, página) porque eso no es estado de servidor. Lo que se va es el fetching.
@@ -154,22 +154,22 @@ graph LR
 
 ## Boundaries objetivo
 
-| Boundary | Implementación |
-|---|---|
+| Boundary        | Implementación                                                                     |
+| --------------- | ---------------------------------------------------------------------------------- |
 | Error de render | `ErrorBoundary` en la raíz y por feature: un fallo en el gráfico no tumba la tabla |
-| Error de red | Estado de error por query, con acción de **reintentar** visible |
-| Carga | Skeletons con la forma del contenido real, no un spinner centrado |
-| Vacío | Estado propio, distinto de carga y de error |
+| Error de red    | Estado de error por query, con acción de **reintentar** visible                    |
+| Carga           | Skeletons con la forma del contenido real, no un spinner centrado                  |
+| Vacío           | Estado propio, distinto de carga y de error                                        |
 
 ## Propiedad de carpetas
 
-| Carpeta | Regla |
-|---|---|
-| `app/` | Solo composición. Sin lógica de dominio |
+| Carpeta       | Regla                                                                        |
+| ------------- | ---------------------------------------------------------------------------- |
+| `app/`        | Solo composición. Sin lógica de dominio                                      |
 | `features/*/` | Puede importar de `components/`, `lib/`, `types/`. **Nunca de otra feature** |
-| `components/` | Sin estado de servidor, sin imports de features |
-| `lib/` | Sin React. Testeable en aislamiento |
-| `types/` | Solo tipos y esquemas Zod |
+| `components/` | Sin estado de servidor, sin imports de features                              |
+| `lib/`        | Sin React. Testeable en aislamiento                                          |
+| `types/`      | Solo tipos y esquemas Zod                                                    |
 
 La regla "nunca de otra feature" es la que evita que la estructura degenere: si dos features
 necesitan lo mismo, ese algo sube a `components/` o `lib/`.

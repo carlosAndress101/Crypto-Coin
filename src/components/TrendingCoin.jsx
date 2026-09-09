@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router";
 
 const TrendingCoin = ({ data }) => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const getCoinDetails = (id) => {
     navigate(`${id}`);
@@ -27,15 +27,11 @@ const TrendingCoin = ({ data }) => {
           </h3>
 
           <h3 className="txt-base flex items-center my-0.5">
-            <span className="text-fg-muted capitalize">
-              market cap rank:&nbsp;
-            </span>
+            <span className="text-fg-muted capitalize">market cap rank:&nbsp;</span>
             <span className="text-accent">{data.market_cap_rank}</span>
           </h3>
           <h3 className="txt-base flex items-center my-0.5">
-            <span className="text-fg-muted capitalize">
-              price (in btc):&nbsp;
-            </span>
+            <span className="text-fg-muted capitalize">price (in btc):&nbsp;</span>
             <span className="text-accent">
               {new Intl.NumberFormat("en-IN", {
                 style: "currency",

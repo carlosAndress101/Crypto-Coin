@@ -1,5 +1,4 @@
-import { useLayoutEffect } from "react";
-import { createContext, useState } from "react";
+import { useLayoutEffect, createContext, useState } from "react";
 
 //create context objet
 export const CryptoContext = createContext({});
@@ -17,15 +16,14 @@ export const CryptoProvider = ({ children }) => {
   const [totalPage, setTotalPage] = useState(250);
   const [perPage, setPerPage] = useState(10);
 
-
   const getCoinData = async (coinId) => {
     setCoinData();
     try {
       const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=true&sparkline=false`
+        `https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=true&sparkline=false`,
       );
       const data = await response.json();
-      console.log("CoinData:",data)
+      console.log("CoinData:", data);
       setCoinData(data);
     } catch (error) {
       console.error(error);
@@ -34,7 +32,7 @@ export const CryptoProvider = ({ children }) => {
 
   const getCryptoData = async () => {
     setCryptoData();
-    setTotalPage(13220)
+    setTotalPage(13220);
     // try {
     //   const response = await fetch(
     //     `https://api.coingecko.com/api/v3/coins/list`
@@ -47,7 +45,7 @@ export const CryptoProvider = ({ children }) => {
 
     try {
       const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&ids=${coinSearch}&order=${sortBy}&per_page=${perPage}&page=${page}&sparkline=false&price_change_percentage=1h%2C24h%2C7d&locale=en`
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&ids=${coinSearch}&order=${sortBy}&per_page=${perPage}&page=${page}&sparkline=false&price_change_percentage=1h%2C24h%2C7d&locale=en`,
       );
       const data = await response.json();
       setCryptoData(data);
@@ -58,9 +56,7 @@ export const CryptoProvider = ({ children }) => {
 
   const getSearchResult = async (query) => {
     try {
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/search?query=${query}`
-      );
+      const response = await fetch(`https://api.coingecko.com/api/v3/search?query=${query}`);
       const data = await response.json();
       setSearchData(data.coins);
     } catch (error) {
@@ -97,7 +93,7 @@ export const CryptoProvider = ({ children }) => {
         setPerPage,
         perPage,
         coinData,
-        getCoinData
+        getCoinData,
       }}
     >
       {children}

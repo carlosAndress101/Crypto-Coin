@@ -18,9 +18,7 @@ const css = readFileSync(join(root, "src/styles/theme.css"), "utf8");
 /** Extrae `--color-nombre: #hex;` del bloque @theme. */
 function readTokens(source) {
   const tokens = {};
-  for (const [, name, hex] of source.matchAll(
-    /--color-([a-z0-9-]+):\s*(#[0-9a-fA-F]{6})\s*;/g,
-  )) {
+  for (const [, name, hex] of source.matchAll(/--color-([a-z0-9-]+):\s*(#[0-9a-fA-F]{6})\s*;/g)) {
     tokens[name] = hex.toLowerCase();
   }
   return tokens;
@@ -34,9 +32,7 @@ const channel = (c) => {
 const luminance = (hex) => {
   const n = Number.parseInt(hex.slice(1), 16);
   return (
-    0.2126 * channel((n >> 16) & 255) +
-    0.7152 * channel((n >> 8) & 255) +
-    0.0722 * channel(n & 255)
+    0.2126 * channel((n >> 16) & 255) + 0.7152 * channel((n >> 8) & 255) + 0.0722 * channel(n & 255)
   );
 };
 
@@ -112,9 +108,7 @@ for (const r of rows) {
   );
 }
 
-console.log(
-  `\n${rows.length - failed}/${rows.length} pares cumplen WCAG 2.2 AA.`,
-);
+console.log(`\n${rows.length - failed}/${rows.length} pares cumplen WCAG 2.2 AA.`);
 
 if (failed > 0) {
   console.error(`\n${failed} par(es) por debajo del umbral.`);

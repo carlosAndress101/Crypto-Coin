@@ -54,6 +54,9 @@
     "import/no-cycle": "error",
     "import/no-self-import": "error",
     "import/no-duplicates": "error",
+    /* `import "./index.css"` es un import por efecto secundario y es la forma
+       estándar de cargar CSS en Vite, no un descuido. */
+    "import/no-unassigned-import": "off",
 
     "unicorn/no-array-for-each": "off",
     "unicorn/prefer-query-selector": "off",

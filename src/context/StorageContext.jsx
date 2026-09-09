@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useLayoutEffect, useState } from "react";
 import { CryptoContext } from "./CryptoContext";
 
 // create context object
@@ -16,24 +10,24 @@ export const StorageProvider = ({ children }) => {
   const [allCoins, setAllCoins] = useState([]);
   const [savedData, setSavedData] = useState();
 
-  let { currency, sortBy } = useContext(CryptoContext);
+  const { currency, sortBy } = useContext(CryptoContext);
 
   const saveCoin = (coinId) => {
-    let oldCoins = JSON.parse(localStorage.getItem("coins"));
+    const oldCoins = JSON.parse(localStorage.getItem("coins"));
 
     if (oldCoins.includes(coinId)) {
       return null;
     } else {
-      let newCoin = [...oldCoins, coinId];
+      const newCoin = [...oldCoins, coinId];
       setAllCoins(newCoin);
       localStorage.setItem("coins", JSON.stringify(newCoin));
     }
   };
 
   const removeCoin = (coinId) => {
-    let oldCoins = JSON.parse(localStorage.getItem("coins"));
+    const oldCoins = JSON.parse(localStorage.getItem("coins"));
 
-    let newCoin = oldCoins.filter((coin) => coin !== coinId);
+    const newCoin = oldCoins.filter((coin) => coin !== coinId);
 
     setAllCoins(newCoin);
     localStorage.setItem("coins", JSON.stringify(newCoin));
@@ -43,8 +37,8 @@ export const StorageProvider = ({ children }) => {
     try {
       const data = await fetch(
         `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&ids=${totalCoins.join(
-          ","
-        )}&order=${sortBy}&sparkline=false&price_change_percentage=1h%2C24h%2C7d`
+          ",",
+        )}&order=${sortBy}&sparkline=false&price_change_percentage=1h%2C24h%2C7d`,
       )
         .then((res) => res.json())
         .then((json) => json);
@@ -69,14 +63,14 @@ export const StorageProvider = ({ children }) => {
   }, [allCoins]);
 
   useLayoutEffect(() => {
-    let isThere = JSON.parse(localStorage.getItem("coins")) || false;
+    const isThere = JSON.parse(localStorage.getItem("coins")) || false;
 
     if (!isThere) {
       //set the localstorage with empty array
       localStorage.setItem("coins", JSON.stringify([]));
     } else {
       //set the state with the current values from the local storage
-      let totalCoins = JSON.parse(localStorage.getItem("coins"));
+      const totalCoins = JSON.parse(localStorage.getItem("coins"));
       setAllCoins(totalCoins);
 
       if (totalCoins.length > 0) {

@@ -77,9 +77,7 @@ export const CoinDetailSchema = z.looseObject({
       twitter_screen_name: z.string().nullish(),
       subreddit_url: z.string().nullish(),
       facebook_username: z.string().nullish(),
-      repos_url: z
-        .looseObject({ github: z.array(z.string()).nullish() })
-        .nullish(),
+      repos_url: z.looseObject({ github: z.array(z.string()).nullish() }).nullish(),
     })
     .nullish(),
 });
