@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useCurrency } from "@/app/search";
-import { normalizeCurrency } from "@/lib/format";
+import { DEFAULT_CURRENCY, normalizeCurrency } from "@/lib/format";
 import { SORT_OPTIONS } from "@/types/coingecko";
 import type { SortOption } from "@/types/coingecko";
 
@@ -42,6 +42,12 @@ export const marketsSearchSchema = z.object({
     .transform((value) => Math.min(250, Math.max(1, Math.trunc(value)))),
   coin: z.string().optional().catch(undefined),
 });
+
+/** Lo que deja la URL el botón Reset: todo a su valor por defecto, y por tanto invisible. */
+const ROOT_AND_MARKETS_DEFAULTS = {
+  currency: DEFAULT_CURRENCY,
+  ...MARKETS_SEARCH_DEFAULTS,
+} as const;
 
 export interface MarketsFilters {
   currency: string;
@@ -120,8 +126,3 @@ export function useMarketsFilters(): MarketsFilters {
     },
   };
 }
-
-const ROOT_AND_MARKETS_DEFAULTS = {
-  currency: "usd",
-  ...MARKETS_SEARCH_DEFAULTS,
-} as const;
