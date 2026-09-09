@@ -1,10 +1,18 @@
-import { createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
+import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+  retainSearchParams,
+  stripSearchParams,
+} from "@tanstack/react-router";
 import RootLayout from "@/app/RootLayout";
 import MarketsPage from "@/features/markets/MarketsPage";
 import TrendingPage from "@/features/trending/TrendingPage";
 import SavedPage from "@/features/saved/SavedPage";
 import CoinDetailsDialog from "@/features/coin-details/CoinDetailsDialog";
 import { NotFound } from "@/components/NotFound";
+import { ROOT_SEARCH_DEFAULTS, rootSearchSchema } from "@/app/search";
+import { MARKETS_SEARCH_DEFAULTS, marketsSearchSchema } from "@/features/markets/useMarketsFilters";
 
 /**
  * Árbol de rutas.
@@ -23,6 +31,18 @@ import { NotFound } from "@/components/NotFound";
 const rootRoute = createRootRoute({
   component: RootLayout,
   notFoundComponent: NotFound,
+  validateSearch: rootSearchSchema,
+  /*
+   * El orden importa. `retainSearchParams` va primero porque TanStack Router DESCARTA los
+   * search params al cambiar de ruta (al revés que react-router): sin él, cada enlace del
+   * menú resetearía la divisa en silencio. `stripSearchParams` va después para que el
+   * valor por defecto no ensucie la URL — así `/` sigue siendo `/` y los enlaces que ya
+   * existían por ahí siguen funcionando igual. Invertidos, se quitaría el default antes
+   * de haber fusionado el valor retenido.
+   */
+  search: {
+    middlewares: [retainSearchParams(["currency"]), stripSearchParams(ROOT_SEARCH_DEFAULTS)],
+  },
 });
 
 /**
@@ -39,6 +59,8 @@ const marketsLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: "_markets",
   component: MarketsPage,
+  validateSearch: marketsSearchSchema,
+  search: { middlewares: [stripSearchParams(MARKETS_SEARCH_DEFAULTS)] },
 });
 
 const marketsIndexRoute = createRoute({

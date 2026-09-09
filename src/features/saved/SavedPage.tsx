@@ -5,12 +5,12 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryState } from "@/components/QueryState";
 import { RefreshButton } from "@/components/RefreshButton";
 import { useWatchlist } from "@/app/WatchlistProvider";
-import { useMarketsFilters } from "@/features/markets/MarketsProvider";
+import { useCurrency } from "@/app/search";
 import { coingecko } from "@/lib/coingecko";
 
 export default function SavedPage() {
   const { ids } = useWatchlist();
-  const { currency } = useMarketsFilters();
+  const currency = useCurrency();
 
   const query = useQuery({
     queryKey: ["saved", ids, currency],

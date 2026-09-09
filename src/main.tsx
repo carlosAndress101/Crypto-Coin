@@ -4,7 +4,6 @@ import { RouterProvider } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { WatchlistProvider } from "@/app/WatchlistProvider";
-import { MarketsProvider } from "@/features/markets/MarketsProvider";
 import { createQueryClient } from "@/lib/queryClient";
 import { router } from "@/app/routes";
 import "@/index.css";
@@ -20,14 +19,13 @@ createRoot(rootElement).render(
         mensaje con reintento en vez de una página en blanco. */}
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        {/* MarketsProvider envuelve a WatchlistProvider porque la vista de guardados
-            necesita la divisa elegida en la de mercado. Es la misma dependencia que
-            existía antes entre StorageContext y CryptoContext, ahora explícita. */}
-        <MarketsProvider>
-          <WatchlistProvider>
-            <RouterProvider router={router} />
-          </WatchlistProvider>
-        </MarketsProvider>
+        {/* Ya no hay un provider de filtros de mercado: divisa, orden, página y tamaño de
+            página viven en la URL, y el router es su dueño. Solo queda la watchlist, que
+            es estado de cliente de verdad —persistido en localStorage, no derivable de
+            la URL ni del servidor—. */}
+        <WatchlistProvider>
+          <RouterProvider router={router} />
+        </WatchlistProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   </StrictMode>,

@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryState } from "@/components/QueryState";
 import { PriceChart } from "@/features/coin-details/PriceChart";
-import { useMarketsFilters } from "@/features/markets/MarketsProvider";
+import { useCurrency } from "@/app/search";
 import { coingecko } from "@/lib/coingecko";
 import { changeTone, formatCurrency, formatNumber, formatPercent } from "@/lib/format";
 import type { CoinDetail } from "@/types/coingecko";
@@ -187,7 +187,7 @@ interface CoinDetailsDialogProps {
 
 export default function CoinDetailsDialog({ coinId, closeTo }: CoinDetailsDialogProps) {
   const navigate = useNavigate();
-  const { currency } = useMarketsFilters();
+  const currency = useCurrency();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 

@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from "react";
-import { useMarketsFilters } from "@/features/markets/MarketsProvider";
+import { useMarketsFilters } from "@/features/markets/useMarketsFilters";
 import { useCoinSearch } from "@/features/markets/queries";
 import { Spinner } from "@/components/Spinner";
 

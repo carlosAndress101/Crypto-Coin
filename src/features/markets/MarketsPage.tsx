@@ -4,7 +4,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryState } from "@/components/QueryState";
 import { Filters } from "@/features/markets/Filters";
 import { Pagination } from "@/features/markets/Pagination";
-import { useMarketsFilters } from "@/features/markets/MarketsProvider";
+import { useMarketsFilters } from "@/features/markets/useMarketsFilters";
 import { useMarkets } from "@/features/markets/queries";
 
 export default function MarketsPage() {
