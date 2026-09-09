@@ -138,7 +138,7 @@ function checkBundle(check) {
   const chunks = [...new Set([...html.matchAll(/assets\/[A-Za-z0-9_-]+\.js/g)].map((m) => m[0]))];
 
   let total = 0;
-  let withRecharts = [];
+  const withRecharts = [];
   for (const chunk of chunks) {
     const file = join(dist, chunk);
     total += statSync(file).size;
