@@ -66,5 +66,16 @@
     "promise/param-names": "error"
   },
 
+  "overrides": [
+    {
+      /* Los scripts de CLI escriben en stdout: ahí console.log ES la salida del
+         programa, no un resto de depuración. */
+      "files": ["scripts/**"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ],
+
   "ignorePatterns": ["dist/**", "node_modules/**", "coverage/**"]
 }

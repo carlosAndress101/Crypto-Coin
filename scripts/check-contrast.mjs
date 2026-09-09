@@ -37,7 +37,7 @@ const luminance = (hex) => {
 };
 
 const ratio = (a, b) => {
-  const [l1, l2] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  const [l1, l2] = [luminance(a), luminance(b)].toSorted((x, y) => y - x);
   return (l1 + 0.05) / (l2 + 0.05);
 };
 

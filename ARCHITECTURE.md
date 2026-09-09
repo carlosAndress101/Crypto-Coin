@@ -1,99 +1,13 @@
 # ARCHITECTURE.md — Cryptosh1f
 
-> Documento vivo. Describe el **estado actual** (pre-refactor) y el **estado objetivo** de la
-> Fase 6. Cuando la Fase 6 se complete, la sección "Estado actual" se elimina.
+> Documento vivo. Describe la arquitectura tal y como está implementada tras la Fase 6.
 >
 > Restricción que domina todas las decisiones de esta arquitectura: **el límite de tasa de
 > CoinGecko** (~10–30 req/min sin API key). Ver `PRODUCT.md` → R1.
 
 ---
 
-# Parte I — Estado actual
-
-## Capas
-
-```
-┌─────────────────────────────────────────────────┐
-│ main.jsx        Árbol de rutas (createBrowserRouter)
-├─────────────────────────────────────────────────┤
-│ pages/          Home = layout + providers
-│                 Crypto · Trending · Saved = vistas
-├─────────────────────────────────────────────────┤
-│ context/        Estado + fetching (acoplados)
-├─────────────────────────────────────────────────┤
-│ components/     Presentación (con fetch propio en Chart)
-└─────────────────────────────────────────────────┘
-                         ↓ fetch directo
-              api.coingecko.com/api/v3
-```
-
-**Problema estructural:** no hay capa de datos. El fetching vive dentro de los providers de
-contexto y, en un caso (`Chart.jsx`), dentro de un componente de presentación. Los 7 endpoints
-están escritos a mano en 5 archivos sin constante de base URL.
-
-## Grafo de rutas
-
-```mermaid
-graph TD
-    R["/ (Home — layout)"] --> C["index → Crypto"]
-    R --> T["/trending → Trending"]
-    R --> S["/saved → Saved"]
-    C --> CD1[":coinId → CryptoDetails"]
-    T --> CD2[":coinId → CryptoDetails"]
-    S --> CD3[":coinId → CryptoDetails"]
-```
-
-`CryptoDetails` aparece **tres veces** en el árbol. No es duplicación accidental: es lo que
-permite que el modal se abra sobre cualquiera de las tres listas conservando la lista de fondo.
-El coste es que añadir una cuarta vista de lista obliga a repetir la ruta hija otra vez.
-
-## Jerarquía de contextos
-
-```
-CryptoProvider          ← estado de mercado, divisa, orden, página
-  └─ TrendingProvider   ← tendencias (independiente)
-       └─ StorageProvider  ← guardados; CONSUME CryptoContext
-            └─ <Outlet/>
-```
-
-**El orden es obligatorio.** `StorageContext` lee `currency` y `sortBy` de `CryptoContext`
-(`StorageContext.jsx:19`) para construir su propia petición. Invertir el anidamiento rompe la app
-en tiempo de ejecución sin error de compilación.
-
-## Flujo de datos
-
-```mermaid
-graph LR
-    F["Filtros: coinSearch, currency,<br/>sortBy, page, perPage"] --> E["useLayoutEffect"]
-    E --> G["getCryptoData()"]
-    G --> A["/coins/markets"]
-    A --> ST["setCryptoData"]
-    ST --> TB["TableComponent"]
-```
-
-El `useLayoutEffect` de `CryptoContext.jsx:76-79` es el **único disparador** de la tabla de
-mercado: cualquier control nuevo solo tiene que escribir su estado ahí.
-
-## Flujo de storage
-
-`localStorage["coins"]` guarda un array de ids. `StorageProvider` lo lee al montar, lo refleja en
-`allCoins`, y un efecto sobre `allCoins` repide `/coins/markets` para hidratar `savedData`.
-El `localStorage` es la fuente de verdad; el estado de React es una proyección.
-
-## Boundaries — no existen
-
-| Boundary        | Estado                                                           |
-| --------------- | ---------------------------------------------------------------- |
-| Error de render | **Ninguno.** Una excepción deja pantalla en blanco               |
-| Error de red    | **Ninguno.** El fallo se traga en un `catch` con `console.error` |
-| Carga           | Convención implícita: `data === undefined` significa "cargando"  |
-
-**La consecuencia crítica:** como los `catch` no escriben estado, _cargando_ y _error_ son el
-mismo `undefined`. Un 429 de CoinGecko se renderiza como un spinner permanente.
-
----
-
-# Parte II — Estado objetivo (Fase 6)
+# Arquitectura
 
 ## Capas
 
@@ -173,3 +87,46 @@ graph LR
 
 La regla "nunca de otra feature" es la que evita que la estructura degenere: si dos features
 necesitan lo mismo, ese algo sube a `components/` o `lib/`.
+
+## Grafo de rutas
+
+```mermaid
+graph TD
+    R["/ (RootLayout)"] --> M["index → MarketsPage"]
+    R --> T["/trending → TrendingPage"]
+    R --> S["/saved → SavedPage"]
+    R --> C["/:coinId → MarketsPage"]
+    C --> D1["index → CoinDetailsDialog"]
+    T --> D2[":coinId → CoinDetailsDialog"]
+    S --> D3[":coinId → CoinDetailsDialog"]
+```
+
+El modal aparece bajo las tres vistas de lista a propósito: es lo que permite abrirlo
+conservando la lista de fondo. Ojo con un detalle que costó un fallo real: bajo el padre
+`/:coinId` el hijo tiene que ser un **`index`**, no otro `:coinId`. Repetirlo genera la
+ruta `/:coinId/:coinId`, que no empareja nunca y deja el modal sin montar.
+
+## Jerarquía de providers
+
+```
+ErrorBoundary                 ← captura fallos de render de todo lo de abajo
+  └─ QueryClientProvider      ← estado de servidor: caché, reintentos, cancelación
+       └─ MarketsProvider     ← estado de UI: divisa, orden, página
+            └─ WatchlistProvider  ← guardados; lee la divisa del anterior
+                 └─ RouterProvider
+```
+
+`MarketsProvider` envuelve a `WatchlistProvider` porque la vista de guardados necesita la
+divisa elegida en la de mercado. Es la misma dependencia que existía entre `StorageContext`
+y `CryptoContext`, pero ahora está declarada donde se ve.
+
+## Verificación
+
+| Comando             | Qué comprueba                                                       |
+| ------------------- | ------------------------------------------------------------------- |
+| `pnpm typecheck`    | TypeScript strict sobre todo `src/`                                 |
+| `pnpm lint`         | oxlint: corrección, accesibilidad, hooks, imports                   |
+| `pnpm format:check` | oxfmt                                                               |
+| `pnpm contrast`     | Cada token de color contra su umbral WCAG                           |
+| `pnpm smoke`        | 18 comprobaciones end-to-end en Chromium con CoinGecko interceptado |
+| `pnpm validate`     | Todo lo anterior más el build de producción                         |
