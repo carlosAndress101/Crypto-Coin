@@ -7,9 +7,6 @@ import {
 } from "@tanstack/react-router";
 import RootLayout from "@/app/RootLayout";
 import MarketsPage from "@/features/markets/MarketsPage";
-import TrendingPage from "@/features/trending/TrendingPage";
-import SavedPage from "@/features/saved/SavedPage";
-import CoinDetailsDialog from "@/features/coin-details/CoinDetailsDialog";
 import { NotFound } from "@/components/NotFound";
 import { ROOT_SEARCH_DEFAULTS, rootSearchSchema } from "@/app/search";
 import { MARKETS_SEARCH_DEFAULTS, marketsSearchSchema } from "@/features/markets/useMarketsFilters";
@@ -68,20 +65,23 @@ const marketsIndexRoute = createRoute({
   path: "/",
 });
 
+/*
+ * A partir de aquí, todo va detrás de `.lazy()`.
+ *
+ * Solo la vista de mercado se carga de entrada: es el primer pintado. Las otras dos
+ * vistas y el diálogo —que arrastra Recharts, con diferencia la dependencia más pesada
+ * del proyecto— se descargan cuando se visitan. `_markets` NO se hace perezosa: es la que
+ * se pinta primero, y aplazarla solo añadiría una ida y vuelta antes de ver nada.
+ */
 const marketsDetailRoute = createRoute({
   getParentRoute: () => marketsLayoutRoute,
   path: "$coinId",
-  component: function MarketsCoinDetails() {
-    const { coinId } = marketsDetailRoute.useParams();
-    return <CoinDetailsDialog coinId={coinId} closeTo="/" />;
-  },
-});
+}).lazy(() => import("@/features/coin-details/detailRoutes").then((m) => m.MarketsDetailRoute));
 
 const trendingRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "trending",
-  component: TrendingPage,
-});
+}).lazy(() => import("@/features/trending/TrendingPage").then((m) => m.Route));
 
 const trendingIndexRoute = createRoute({
   getParentRoute: () => trendingRoute,
@@ -91,17 +91,12 @@ const trendingIndexRoute = createRoute({
 const trendingDetailRoute = createRoute({
   getParentRoute: () => trendingRoute,
   path: "$coinId",
-  component: function TrendingCoinDetails() {
-    const { coinId } = trendingDetailRoute.useParams();
-    return <CoinDetailsDialog coinId={coinId} closeTo="/trending" />;
-  },
-});
+}).lazy(() => import("@/features/coin-details/detailRoutes").then((m) => m.TrendingDetailRoute));
 
 const savedRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "saved",
-  component: SavedPage,
-});
+}).lazy(() => import("@/features/saved/SavedPage").then((m) => m.Route));
 
 const savedIndexRoute = createRoute({
   getParentRoute: () => savedRoute,
@@ -111,11 +106,7 @@ const savedIndexRoute = createRoute({
 const savedDetailRoute = createRoute({
   getParentRoute: () => savedRoute,
   path: "$coinId",
-  component: function SavedCoinDetails() {
-    const { coinId } = savedDetailRoute.useParams();
-    return <CoinDetailsDialog coinId={coinId} closeTo="/saved" />;
-  },
-});
+}).lazy(() => import("@/features/coin-details/detailRoutes").then((m) => m.SavedDetailRoute));
 
 const routeTree = rootRoute.addChildren([
   marketsLayoutRoute.addChildren([marketsIndexRoute, marketsDetailRoute]),

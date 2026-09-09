@@ -1,4 +1,4 @@
-import { Link, Outlet } from "@tanstack/react-router";
+import { createLazyRoute, Link, Outlet } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryState } from "@/components/QueryState";
@@ -87,3 +87,6 @@ export default function TrendingPage() {
     </section>
   );
 }
+
+/** Ruta perezosa: esta vista no forma parte del primer pintado. */
+export const Route = createLazyRoute("/trending")({ component: TrendingPage });

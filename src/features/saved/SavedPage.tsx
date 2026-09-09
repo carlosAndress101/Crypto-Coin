@@ -1,4 +1,4 @@
-import { Outlet } from "@tanstack/react-router";
+import { createLazyRoute, Outlet } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { CoinTable } from "@/components/CoinTable";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -68,3 +68,6 @@ export default function SavedPage() {
     </section>
   );
 }
+
+/** Ruta perezosa: esta vista no forma parte del primer pintado. */
+export const Route = createLazyRoute("/saved")({ component: SavedPage });

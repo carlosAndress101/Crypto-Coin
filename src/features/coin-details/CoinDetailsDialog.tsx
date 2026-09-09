@@ -1,10 +1,21 @@
-import { useEffect, useId, useRef } from "react";
+import { lazy, Suspense, useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryState } from "@/components/QueryState";
-import { PriceChart } from "@/features/coin-details/PriceChart";
+import { Spinner } from "@/components/Spinner";
+
+/**
+ * Segundo nivel de división, dentro del propio modal.
+ *
+ * Sin esto, Recharts saldría del chunk inicial pero caería entero en el del diálogo, y
+ * abrir una moneda descargaría ~350 kB antes de mostrar nada. Así las estadísticas —el
+ * contenido principal— aparecen de inmediato y el gráfico entra después.
+ */
+const PriceChart = lazy(async () => ({
+  default: (await import("@/features/coin-details/PriceChart")).PriceChart,
+}));
 import { useCurrency } from "@/app/search";
 import { coingecko } from "@/lib/coingecko";
 import { changeTone, formatCurrency, formatNumber, formatPercent } from "@/lib/format";
@@ -158,7 +169,9 @@ function DetailBody({ coin, currency }: { coin: CoinDetail; currency: string }) 
 
       <div className="flex w-full flex-col lg:w-[55%]">
         <ErrorBoundary area="price chart">
-          <PriceChart coinId={coin.id} currency={currency} />
+          <Suspense fallback={<Spinner label="Loading chart…" />}>
+            <PriceChart coinId={coin.id} currency={currency} />
+          </Suspense>
         </ErrorBoundary>
       </div>
     </div>
