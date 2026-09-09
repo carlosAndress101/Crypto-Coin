@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <!-- SVG primero: 264 bytes, nítido a cualquier tamaño y en cualquier densidad.
+         El PNG de 180 px es para iOS, que no acepta favicon SVG. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <title>Cryptosh1f — Live cryptocurrency prices, trends and watchlist</title>
     <meta
@@ -18,8 +22,14 @@
       property="og:description"
       content="Live prices, market caps and trends for thousands of coins, plus a watchlist that stays on your device."
     />
-    <meta property="og:image" content="/favicon.png" />
-    <meta name="twitter:card" content="summary" />
+    <!-- Absolutas a propósito: ningún rastreador resuelve una ruta relativa en og:image,
+         así que la anterior (/favicon.png) nunca llegó a mostrarse en ninguna parte. -->
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="%VITE_SITE_URL%/og.jpg" />
 
     <!-- Preconnect antes de pedir la fuente: ahorra el handshake TLS en la ruta crítica. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

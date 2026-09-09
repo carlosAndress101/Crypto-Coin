@@ -13,6 +13,7 @@
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "contrast": "node scripts/check-contrast.mjs",
+    "icons": "node scripts/build-icons.mjs",
     "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm contrast",
     "validate": "pnpm check && pnpm build && pnpm smoke",
     "verify": "pnpm validate && pnpm audit --prod",
