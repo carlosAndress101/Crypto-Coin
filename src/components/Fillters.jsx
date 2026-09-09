@@ -29,7 +29,7 @@ const Currency = () => {
           name="currency"
           ref={currencyRef}
           placeholder="usd"
-          className="w-16 rounded bg-gray-200 placeholder:text-gray-100  placeholder:text-base required outline-0  border border-transparent focus:border-cyan leading-4  sm:text-base text-sm sm:p-0 sm:pl-2 p-1"
+          className="w-16 rounded bg-surface-control placeholder:text-fg-muted  placeholder:text-base required outline-0  border border-transparent focus:border-accent leading-4  sm:text-base text-sm sm:p-0 sm:pl-2 p-1"
         />
 
         <button type="submit" className="ml-1 cursor-pointer">
@@ -53,7 +53,7 @@ const SortBy = () => {
     <>
     <label className="relative flex sm:justify-center justify-start items-center mt-4 sm:mt-0">
       <span className="mr-1 sm:font-bold font-medium md:text-sm sm:text-sm lg:text-base text-sm w-16">sort by: </span>
-      <select name="sortby" className="rounded bg-gray-200 sm:text-base text-sm pl-2 pr-10 py-1.5 focus:outline-0 text-transparent appearance-none capitalize leading-4 w-full sm:w-48" onClick={handleSort}>
+      <select name="sortby" className="rounded bg-surface-control sm:text-base text-sm pl-2 pr-10 py-1.5 focus:outline-0 text-transparent appearance-none capitalize leading-4 w-full sm:w-48" onClick={handleSort}>
       
         <option className="sm:text-base text-sm" value="market_cap_desc">Market Cap Desc</option>
         <option className="sm:text-base text-sm" value="market_cap_asc">Market Cap Asc</option>
@@ -71,7 +71,7 @@ const SortBy = () => {
             width="1em"
             height="1em"
             viewBox="0 0 24 24"
-            className="w-full h-full fill-cyan"
+            className="w-full h-full fill-accent"
             style={{
               msTransform: "rotate(360deg)",
               WebkitTransform: "rotate(360deg)",
@@ -91,7 +91,7 @@ const SortBy = () => {
 function Fillters() {
   return (
     <div
-      className=" w-full lg:h-12 h-full lg:border-2 rounded-lg border-solid lg:border-gray-100 border-0 flex lg:flex-row flex-col lg:items-center lg:justify-between relative align-start justify-between"
+      className=" w-full lg:h-12 h-full lg:border-2 rounded-lg border-solid lg:border-line-strong border-0 flex lg:flex-row flex-col lg:items-center lg:justify-between relative align-start justify-between"
     >
       <Search />
       <Currency />

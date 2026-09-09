@@ -29,8 +29,8 @@ const PerPage = () => {
           max={250}
           ref={inputRef}
           placeholder="10"
-          className="w-16 rounded bg-gray-200 placeholder:text-gray-100
-         pl-2 required outline-0 border border-transparent focus:border-cyan leading-4"
+          className="w-16 rounded bg-surface-control placeholder:text-fg-muted
+         pl-2 required outline-0 border border-transparent focus:border-accent leading-4"
         />
 
         <button type="submit" className="ml-1 cursor-pointer">
@@ -86,25 +86,25 @@ function Pagination() {
         <PerPage/>
         <ul className='flex items-center justify-end text-sm'>
           <li className='flex items-center'>
-            <button className='outline-0 hover:text-cyan w-8' onClick={prev}>
+            <button className='outline-0 hover:text-accent w-8' onClick={prev}>
             <img className='w-full h-auto rotate-180' src={paginationArrow} alt="left" />
             </button>
           </li>
           {
-            (page+1 === TotalNumber || page === TotalNumber) ? <li><button onClick={multiStepPrev} className='outline-0 hover:text-cyan rounded-full w-8 h-8 flex justify-center items-center text-lg'>...</button></li> : null
+            (page+1 === TotalNumber || page === TotalNumber) ? <li><button onClick={multiStepPrev} className='outline-0 hover:text-accent rounded-full w-8 h-8 flex justify-center items-center text-lg'>...</button></li> : null
           }
           {
-            (page-1 !== 0) ? <li><button onClick={prev} className='outline-0 hover:text-cyan rounded-full w-8 h-8 flex justify-center items-center bg-gray-200 mx-1.5'>{page - 1}</button></li> : null
+            (page-1 !== 0) ? <li><button onClick={prev} className='outline-0 hover:text-accent rounded-full w-8 h-8 flex justify-center items-center bg-surface-control mx-1.5'>{page - 1}</button></li> : null
           }
-          <li><button disabled className='outline-0 bg-cyan hover:text-gray-200 rounded-full w-8 h-8 flex justify-center items-center mx-1.5'>{page}</button></li>
+          <li><button disabled className='outline-0 bg-accent hover:text-surface-control rounded-full w-8 h-8 flex justify-center items-center mx-1.5'>{page}</button></li>
           {
-            (page+1 !== TotalNumber && page !== TotalNumber) ? <li><button onClick={next} className='outline-0 hover:text-cyan rounded-full w-8 h-8 flex justify-center items-center bg-gray-300 mx-1.5'>{page + 1}</button></li> : null
-          }
-          {
-            page+1 !== TotalNumber && page !== TotalNumber ? <li><button onClick={multiStepNext} className='outline-0 hover:text-cyan rounded-full w-8 h-8 flex justify-center items-center text-lg'>...</button></li> : null
+            (page+1 !== TotalNumber && page !== TotalNumber) ? <li><button onClick={next} className='outline-0 hover:text-accent rounded-full w-8 h-8 flex justify-center items-center bg-surface-base mx-1.5'>{page + 1}</button></li> : null
           }
           {
-            page !== TotalNumber ? <li><button onClick={()=> setPage(TotalNumber)} className='outline-0 hover:text-cyan rounded-full w-8 h-8 flex justify-center items-center bg-gray-200 mx-1.5'>{TotalNumber}</button></li> : null
+            page+1 !== TotalNumber && page !== TotalNumber ? <li><button onClick={multiStepNext} className='outline-0 hover:text-accent rounded-full w-8 h-8 flex justify-center items-center text-lg'>...</button></li> : null
+          }
+          {
+            page !== TotalNumber ? <li><button onClick={()=> setPage(TotalNumber)} className='outline-0 hover:text-accent rounded-full w-8 h-8 flex justify-center items-center bg-surface-control mx-1.5'>{TotalNumber}</button></li> : null
           }
           <li>
             <button onClick={next}>

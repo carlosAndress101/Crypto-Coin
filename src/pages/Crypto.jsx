@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom"
+import { Outlet } from "react-router"
 import Fillters from "../components/Fillters"
 import TableComponent from "../components/TableComponent"
 

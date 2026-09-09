@@ -5,7 +5,8 @@ import Crypto from "./pages/Crypto";
 import Trending from "./pages/Trending";
 import Saved from "./pages/Saved";
 import "./index.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter } from "react-router";
+import { RouterProvider } from "react-router/dom";
 import CryptoDetails from "./components/CryptoDetails";
 
 

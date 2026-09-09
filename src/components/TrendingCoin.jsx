@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const TrendingCoin = ({ data }) => {
   let navigate = useNavigate();
@@ -10,15 +10,15 @@ const TrendingCoin = ({ data }) => {
 
   return (
     <div
-      className="lg:w-[40%] sm:w-[60%] w-[80%] bg-gray-200 mb-12 last:mb-0 rounded-lg p-4 relative cursor-pointer hover:bg-gray-100 hover:bg-opacity-40
+      className="lg:w-[40%] sm:w-[60%] w-[80%] bg-surface-control mb-12 last:mb-0 rounded-lg p-4 relative cursor-pointer hover:bg-surface-hover/40
     "
       onClick={() => getCoinDetails(data.id)}
     >
       {data ? (
         <>
           <h3 className="txt-base flex items-center my-0.5">
-            <span className="text-gray-100 capitalize">name:&nbsp;</span>
-            <span className="text-cyan">{data.name}</span>
+            <span className="text-fg-muted capitalize">name:&nbsp;</span>
+            <span className="text-accent">{data.name}</span>
             <img
               src={data.small}
               alt={data.name}
@@ -27,16 +27,16 @@ const TrendingCoin = ({ data }) => {
           </h3>
 
           <h3 className="txt-base flex items-center my-0.5">
-            <span className="text-gray-100 capitalize">
+            <span className="text-fg-muted capitalize">
               market cap rank:&nbsp;
             </span>
-            <span className="text-cyan">{data.market_cap_rank}</span>
+            <span className="text-accent">{data.market_cap_rank}</span>
           </h3>
           <h3 className="txt-base flex items-center my-0.5">
-            <span className="text-gray-100 capitalize">
+            <span className="text-fg-muted capitalize">
               price (in btc):&nbsp;
             </span>
-            <span className="text-cyan">
+            <span className="text-accent">
               {new Intl.NumberFormat("en-IN", {
                 style: "currency",
                 currency: "btc",
@@ -46,8 +46,8 @@ const TrendingCoin = ({ data }) => {
           </h3>
 
           <h3 className="txt-base flex items-center my-0.5">
-            <span className="text-gray-100 capitalize">score:&nbsp;</span>
-            <span className="text-cyan">{data.score}</span>
+            <span className="text-fg-muted capitalize">score:&nbsp;</span>
+            <span className="text-accent">{data.score}</span>
           </h3>
 
           <img
@@ -62,8 +62,8 @@ const TrendingCoin = ({ data }) => {
              "
         >
           <div
-            className="w-8 h-8 border-4 border-cyan rounded-full
-             border-b-gray-200 animate-spin 
+            className="w-8 h-8 border-4 border-accent rounded-full
+             border-b-line animate-spin 
              "
             role="status"
           />

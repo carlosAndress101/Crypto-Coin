@@ -1,0 +1,50 @@
+/**
+ * Sistema de color — Cryptosh1f
+ *
+ * Todos los tokens de texto alcanzan 4.5:1 (WCAG 2.2 AA) sobre las superficies donde
+ * realmente se usan; bordes y foco alcanzan 3:1. Verificado por `pnpm contrast`, que lee
+ * este archivo, así que la comprobación no puede desincronizarse del código.
+ *
+ * Los tokens son SEMÁNTICOS, no crudos: se usa `bg-surface-raised`, nunca `bg-neutral-800`.
+ * Eso permite cambiar el valor de un tono sin repasar los componentes uno a uno.
+ *
+ * El cyan #14ffec se conserva intacto: es el ancla de marca y ya cumplía de sobra.
+ */
+@theme {
+  /* ---- Superficies, de la más profunda a la más elevada ---- */
+  --color-surface-base: #0b0d10; /* fondo de página */
+  --color-surface-raised: #14171c; /* tarjetas, filas, modal */
+  --color-surface-control: #1e222a; /* inputs, botones inactivos */
+  --color-surface-hover: #272c35; /* estado hover de fila y control */
+
+  /* ---- Texto ---- */
+  --color-fg: #eef1f5; /* cifras, títulos */
+  --color-fg-secondary: #c3cad5; /* cuerpo */
+  --color-fg-muted: #949daa; /* cabeceras de tabla, etiquetas */
+  --color-fg-inverse: #0b0d10; /* sobre fondos de acento */
+
+  /* ---- Marca y estados ---- */
+  --color-accent: #14ffec; /* ancla de marca, sin cambios */
+  --color-accent-hover: #7bfff2;
+  --color-positive: #3ee07f; /* variación de precio al alza */
+  --color-negative: #ff7a94; /* variación de precio a la baja */
+
+  /* ---- Líneas y foco ---- */
+  --color-line: #272c35;
+  --color-line-strong: #666e7d;
+  --color-focus: #14ffec;
+
+  /* ---- Tipografía ---- */
+  --font-nunito: "Nunito", ui-sans-serif, system-ui, sans-serif;
+
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.5rem;
+  --text-xl: 2rem;
+
+  /* ---- Breakpoints ----
+   * `xs` se define de verdad: el código ya usaba `xs:` en Crypto.jsx contra un
+   * breakpoint inexistente, así que esa clase no hacía nada. */
+  --breakpoint-xs: 30rem;
+}

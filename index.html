@@ -1,13 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./src/assets/new cryptocoin bg void.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cryptocoins</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <title>Cryptosh1f — Live cryptocurrency prices, trends and watchlist</title>
+    <meta
+      name="description"
+      content="Track live cryptocurrency prices, market caps and 7-day trends, explore what's trending, and keep a personal watchlist that stays in your browser."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Cryptosh1f — Live cryptocurrency prices" />
+    <meta
+      property="og:description"
+      content="Live prices, market caps and trends for thousands of coins, plus a watchlist that stays on your device."
+    />
+    <meta property="og:image" content="/favicon.png" />
+    <meta name="twitter:card" content="summary" />
+
+    <!-- Preconnect antes de pedir la fuente: ahorra el handshake TLS en la ruta crítica. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+    />
   </head>
   <body>
     <div id="root"></div>
+    <!-- Destino del portal del modal de detalle de moneda (ver CryptoDetails). -->
     <div id="model"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

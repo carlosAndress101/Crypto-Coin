@@ -1,6 +1,5 @@
 import { useContext } from "react";
-import { data } from "autoprefixer";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import TrendingCoin from '../components/TrendingCoin';
 import { TrendingContext } from "../context/TrendingContext";
 
@@ -8,9 +7,9 @@ function Trending() {
   const { trendData, resetTrendingResult } = useContext(TrendingContext);
   return (
     <section className="w-[80%] h-full flex flex-col mt-16 mb-24 relative">
-    <div className="w-full flex lg:flex-row flex-col items-center flex-wrap justify-evenly py-8 border border-gray-100 rounded min-h-[60vh]">
+    <div className="w-full flex lg:flex-row flex-col items-center flex-wrap justify-evenly py-8 border border-line-strong rounded min-h-[60vh]">
       {trendData && trendData.map(coin => (
-          <TrendingCoin key={data.coin_id} data={coin.item} />
+          <TrendingCoin key={coin.item.coin_id} data={coin.item} />
         ))}
       <button
         className="w-[2rem] ml-4 hover:scale-110 transition-all transition-ease
@@ -23,7 +22,7 @@ function Trending() {
           width="1em"
           height="1em"
           viewBox="0 0 24 24"
-          className="w-full h-full fill-cyan"
+          className="w-full h-full fill-accent"
           style={{
             msTransform: "rotate(360deg)",
             WebkitTransform: "rotate(360deg)",

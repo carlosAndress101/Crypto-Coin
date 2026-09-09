@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { CryptoContext } from "../context/CryptoContext";
 //import Start from "../components/icons";
 import Pagination from './Pagination';
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { StorageContext } from "../context/StorageContext";
 
 
@@ -26,7 +26,7 @@ const SaveBtn = ({ data }) => {
     <button
       className="outline-0 border-0 bg-none cursor-pointer" onClick={(e) => handleClick(e)}>
       <svg
-        className={`w-[1.5rem] ml-1.5 ${allCoins?.includes(data.id) ? "fill-cyan" : "fill-gray-100"} hover:fill-cyan`}
+        className={`w-[1.5rem] ml-1.5 ${allCoins?.includes(data.id) ? "fill-accent" : "fill-fg-muted"} hover:fill-accent`}
         width="30"
         height="30"
         viewBox="0 0 30 30"
@@ -50,10 +50,10 @@ function TableComponent() {
 
   return (
     <>
-    <div className="flex flex-col mt-9 border border-gray-100 rounded">
+    <div className="flex flex-col mt-9 border border-line-strong rounded">
       {cryptoData ? (
         <table className="w-full table-auto">
-          <thead className="capitalize text-base text-gray-100 font-medium border-b border-gray-100">
+          <thead className="capitalize text-base text-fg-muted font-medium border-b border-line-strong">
             <tr>
               <th className="py-1">Asset</th>
               <th className="py-1">Name</th>
@@ -69,7 +69,7 @@ function TableComponent() {
             {cryptoData.map((data) => {
               return (
                 <tr
-                  className="text-center text-base border-b border-gray-100 hover:bg-gray-200 last:border-b-0"
+                  className="text-center text-base border-b border-line-strong hover:bg-surface-control last:border-b-0"
                   key={data.id}
                 >
                   <td className="py-4 flex items-center uppercase">
@@ -90,24 +90,24 @@ function TableComponent() {
                   }</td>
                   <td className="py-4 lg:table-cell hidden">{data.total_volume}</td>
 
-                  <td className={data.market_cap_change_percentage_24h > 0 ? "text-green py-4 lg:table-cell hidden"
-                        : "text-red py-4 lg:table-cell hidden"}>
+                  <td className={data.market_cap_change_percentage_24h > 0 ? "text-positive py-4 lg:table-cell hidden"
+                        : "text-negative py-4 lg:table-cell hidden"}>
                     {Number(data.market_cap_change_percentage_24h).toFixed(2)}%
                   </td>
 
                   <td
-                    className={data.price_change_percentage_1h_in_currency > 0 ? "text-green py-4 lg:table-cell hidden"
-                        : "text-red py-4 lg:table-cell hidden"}>
+                    className={data.price_change_percentage_1h_in_currency > 0 ? "text-positive py-4 lg:table-cell hidden"
+                        : "text-negative py-4 lg:table-cell hidden"}>
                     {Number(data.price_change_percentage_1h_in_currency).toFixed(2)}%
                   </td>
 
-                  <td className={data.price_change_percentage_24h_in_currency > 0 ? "text-green py-4 lg:table-cell hidden"
-                        : "text-red py-4 lg:table-cell hidden"}>
+                  <td className={data.price_change_percentage_24h_in_currency > 0 ? "text-positive py-4 lg:table-cell hidden"
+                        : "text-negative py-4 lg:table-cell hidden"}>
                     {Number(data.price_change_percentage_24h_in_currency).toFixed(2)}%
                   </td>
 
-                  <td className={data.price_change_percentage_7d_in_currency > 0 ? "text-green py-4 lg:table-cell hidden"
-                        : "text-red py-4 lg:table-cell hidden"}>
+                  <td className={data.price_change_percentage_7d_in_currency > 0 ? "text-positive py-4 lg:table-cell hidden"
+                        : "text-negative py-4 lg:table-cell hidden"}>
                     {Number(data.price_change_percentage_7d_in_currency).toFixed(2)}%
                   </td>
                 </tr>
@@ -117,13 +117,13 @@ function TableComponent() {
         </table>
       ) : (
         <div className="w-full h-full min-h-[60vh] flex justify-center items-center"> 
-                  <div className="w-8 h-8 border-4 border-cyan rounded-full border-b-gray-200 animate-spin" role="status"/>
+                  <div className="w-8 h-8 border-4 border-accent rounded-full border-b-line animate-spin" role="status"/>
                     <span className="ml-2">Please Wait...</span>
                 </div>
       )}
     </div>
     <div className="flex items-center justify-between mt-4 capitalize h-[2rem]">
-      <span>Data Provided By <a className="text-cyan" href="https://www.coingecko.com/" rel="noreferrer" target="_blank">CoinGecko</a></span>
+      <span>Data Provided By <a className="text-accent" href="https://www.coingecko.com/" rel="noreferrer" target="_blank">CoinGecko</a></span>
        <Pagination/>
     </div>
     </>

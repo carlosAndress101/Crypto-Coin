@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "useDefineForClassFields": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+
+    /* Strict de verdad. `strict: true` por sí solo deja fuera las tres de abajo,
+       que son justo las que atrapan los bugs reales de esta aplicación:
+       índices de la API que pueden no existir, variables sin usar tras un
+       refactor, y opcionales que se confunden con undefined explícito. */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+
+    /* TS 7 eliminó `baseUrl`: los `paths` se resuelven relativos a este archivo. */
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "scripts", "vite.config.ts"]
+}

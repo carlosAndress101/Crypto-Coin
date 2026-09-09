@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useContext } from "react";
-import {Link} from 'react-router-dom'
-import { Outlet } from "react-router-dom";
+import {Link} from 'react-router'
+import { Outlet } from "react-router";
 import { StorageContext } from "../context/StorageContext";
 import { CryptoContext } from "../context/CryptoContext";
 
@@ -24,7 +24,7 @@ const SaveBtn = ({ data }) => {
     <button
       className="outline-0 border-0 bg-none cursor-pointer" onClick={(e) => handleClick(e)}>
       <svg
-        className={`w-[1.5rem] ml-1.5 ${allCoins?.includes(data.id) ? "fill-cyan" : "fill-gray-100"} hover:fill-cyan`}
+        className={`w-[1.5rem] ml-1.5 ${allCoins?.includes(data.id) ? "fill-accent" : "fill-fg-muted"} hover:fill-accent`}
         width="30"
         height="30"
         viewBox="0 0 30 30"
@@ -49,9 +49,9 @@ const Saved = () => {
 
   return (
     <section className="w-[80%] h-full flex flex-col mt-16 mb-24 relative">
-    <div className="w-full min-h-[60vh] py-8  border border-gray-100 rounded">
+    <div className="w-full min-h-[60vh] py-8  border border-line-strong rounded">
       {savedData ? (<table className="w-full table-auto">
-        <thead className="capitalize text-base text-gray-100 font-medium border-b border-gray-100">
+        <thead className="capitalize text-base text-fg-muted font-medium border-b border-line-strong">
           <tr>
             <th className="py-1">Asset</th>
             <th className="py-1">Name</th>
@@ -67,7 +67,7 @@ const Saved = () => {
         {savedData && savedData.map((data) => {
           return (
               <tr
-                className="text-center text-base border-b border-gray-100 hover:bg-gray-200 last:border-b-0"
+                className="text-center text-base border-b border-line-strong hover:bg-surface-control last:border-b-0"
                 key={data.id}>
 
                 <td className="py-4 flex items-center uppercase">
@@ -88,24 +88,24 @@ const Saved = () => {
                 }</td>
                 <td className="py-4">{data.total_volume}</td>
 
-                <td className={data.market_cap_change_percentage_24h > 0 ? "text-green py-4"
-                      : "text-red py-4"}>
+                <td className={data.market_cap_change_percentage_24h > 0 ? "text-positive py-4"
+                      : "text-negative py-4"}>
                   {Number(data.market_cap_change_percentage_24h).toFixed(2)}%
                 </td>
 
                 <td
-                  className={data.price_change_percentage_1h_in_currency > 0 ? "text-green py-4"
-                      : "text-red py-4"}>
+                  className={data.price_change_percentage_1h_in_currency > 0 ? "text-positive py-4"
+                      : "text-negative py-4"}>
                   {Number(data.price_change_percentage_1h_in_currency).toFixed(2)}%
                 </td>
 
-                <td className={data.price_change_percentage_24h_in_currency > 0 ? "text-green py-4"
-                      : "text-red py-4"}>
+                <td className={data.price_change_percentage_24h_in_currency > 0 ? "text-positive py-4"
+                      : "text-negative py-4"}>
                   {Number(data.price_change_percentage_24h_in_currency).toFixed(2)}%
                 </td>
 
-                <td className={data.price_change_percentage_7d_in_currency > 0 ? "text-green py-4"
-                      : "text-red py-4"}>
+                <td className={data.price_change_percentage_7d_in_currency > 0 ? "text-positive py-4"
+                      : "text-negative py-4"}>
                   {Number(data.price_change_percentage_7d_in_currency).toFixed(2)}%
                 </td>
               </tr>
@@ -113,7 +113,7 @@ const Saved = () => {
           })}
         </tbody>
       </table>) : (
-          <h1 className="min-h-[60vh] text-lg text-cyan flex items-center justify-center">
+          <h1 className="min-h-[60vh] text-lg text-accent flex items-center justify-center">
             There is no data to display!
           </h1>
         )}
@@ -128,7 +128,7 @@ const Saved = () => {
             width="1em"
             height="1em"
             viewBox="0 0 24 24"
-            className="w-full h-full fill-cyan"
+            className="w-full h-full fill-accent"
             style={{
               msTransform: "rotate(360deg)",
               WebkitTransform: "rotate(360deg)",
