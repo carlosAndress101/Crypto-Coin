@@ -1,0 +1,81 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+
+  "plugins": ["react", "import", "jsx-a11y", "unicorn", "promise", "oxc"],
+
+  "env": {
+    "browser": true,
+    "es2024": true
+  },
+
+  "settings": {
+    "react": {
+      "version": "19.2.8"
+    }
+  },
+
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "warn",
+    "pedantic": "off",
+    "style": "off"
+  },
+
+  "rules": {
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-debugger": "error",
+
+    "eqeqeq": ["error", "smart"],
+    "no-var": "error",
+    "prefer-const": "error",
+
+    /* El proyecto usa el runtime JSX automático (React 17+), así que no hace falta
+       tener `React` en el ámbito. Es el equivalente de `plugin:react/jsx-runtime`. */
+    "react/react-in-jsx-scope": "off",
+
+    "react/jsx-key": "error",
+    "react/no-array-index-key": "error",
+    "react/self-closing-comp": "error",
+    "react/jsx-no-target-blank": "error",
+    "react/exhaustive-deps": "error",
+    "react/rules-of-hooks": "error",
+
+    "jsx-a11y/alt-text": "error",
+    "jsx-a11y/anchor-is-valid": "error",
+    "jsx-a11y/aria-props": "error",
+    "jsx-a11y/aria-role": "error",
+    "jsx-a11y/click-events-have-key-events": "error",
+    "jsx-a11y/no-static-element-interactions": "error",
+    "jsx-a11y/label-has-associated-control": "error",
+    "jsx-a11y/no-autofocus": "error",
+    "jsx-a11y/role-has-required-aria-props": "error",
+
+    "import/no-cycle": "error",
+    "import/no-self-import": "error",
+    "import/no-duplicates": "error",
+    /* `import "./index.css"` es un import por efecto secundario y es la forma
+       estándar de cargar CSS en Vite, no un descuido. */
+    "import/no-unassigned-import": "off",
+
+    "unicorn/no-array-for-each": "off",
+    "unicorn/prefer-query-selector": "off",
+    "unicorn/filename-case": "off",
+
+    "promise/no-return-wrap": "error",
+    "promise/param-names": "error"
+  },
+
+  "overrides": [
+    {
+      /* Los scripts de CLI escriben en stdout: ahí console.log ES la salida del
+         programa, no un resto de depuración. */
+      "files": ["scripts/**"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ],
+
+  "ignorePatterns": ["dist/**", "node_modules/**", "coverage/**"]
+}

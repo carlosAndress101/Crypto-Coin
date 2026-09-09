@@ -1,0 +1,4 @@
+{
+  "recommendations": ["oxc.oxc-vscode", "bradlc.vscode-tailwindcss", "editorconfig.editorconfig"],
+  "unwantedRecommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+}

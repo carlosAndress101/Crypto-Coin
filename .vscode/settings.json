@@ -1,3 +1,23 @@
 {
-    "git.ignoreLimitWarning": true
+  "git.ignoreLimitWarning": true,
+
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit"
+  },
+
+  "[javascript]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+  "[javascriptreact]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+  "[typescript]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+  "[typescriptreact]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+
+  "oxc.enable": true,
+  "oxc.fmt.experimental": true,
+
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // Los tokens de color viven en CSS (@theme), no en tailwind.config.js.
+  "tailwindCSS.experimental.configFile": "src/index.css",
+  "files.associations": { "*.css": "tailwindcss" }
 }

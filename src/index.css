@@ -1,7 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "./styles/theme.css";
 
+@plugin "tailwind-scrollbar";
 
+/**
+ * La fuente se carga desde index.html con preconnect en vez de con @import.
+ * Un @import en CSS obliga al navegador a descargar y parsear la hoja antes de
+ * descubrir siquiera la petición de la fuente, lo que la pone en la ruta crítica.
+ */
 
+@layer base {
+  body {
+    background-color: var(--color-surface-base);
+    color: var(--color-text-primary);
+  }
+
+  /* Foco visible y consistente en todo lo interactivo. El navegador solo lo pinta
+     en navegación por teclado, así que no ensucia el uso con ratón. */
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
