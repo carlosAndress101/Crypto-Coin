@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { Outlet } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { CoinTable } from "@/components/CoinTable";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -54,7 +54,12 @@ export default function SavedPage() {
             loadingLabel="Loading your watchlist…"
             emptyMessage="We could not load data for your saved coins."
           >
-            <CoinTable coins={coins} currency={currency} caption="Your saved coins" />
+            <CoinTable
+              coins={coins}
+              currency={currency}
+              caption="Your saved coins"
+              detailTo="/saved/$coinId"
+            />
           </QueryState>
         </ErrorBoundary>
       )}

@@ -1,12 +1,12 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { RouterProvider } from "react-router/dom";
+import { RouterProvider } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { WatchlistProvider } from "@/app/WatchlistProvider";
 import { MarketsProvider } from "@/features/markets/MarketsProvider";
 import { createQueryClient } from "@/lib/queryClient";
-import { router } from "@/app/router";
+import { router } from "@/app/routes";
 import "@/index.css";
 
 const rootElement = document.getElementById("root");

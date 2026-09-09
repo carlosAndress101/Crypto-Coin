@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryState } from "@/components/QueryState";
@@ -9,6 +9,7 @@ import { useMarketsFilters } from "@/features/markets/MarketsProvider";
 import { coingecko } from "@/lib/coingecko";
 import { changeTone, formatCurrency, formatNumber, formatPercent } from "@/lib/format";
 import type { CoinDetail } from "@/types/coingecko";
+import type { ListPath } from "@/app/paths";
 
 function Stat({
   label,
@@ -172,21 +173,34 @@ function DetailBody({ coin, currency }: { coin: CoinDetail; currency: string }) 
  * del fondo y devolución del foco al cerrar. Hacer todo eso a mano sobre un `<div>`
  * habría sido bastante más código y bastante peor.
  */
-export default function CoinDetailsDialog() {
-  const { coinId } = useParams();
+interface CoinDetailsDialogProps {
+  /** Viene tipado del `useParams()` de la ruta que monta el diálogo, así que es `string`. */
+  coinId: string;
+  /**
+   * Vista de lista a la que se vuelve al cerrar. Es una prop porque el mismo diálogo
+   * cuelga de tres padres distintos y TanStack Router no tiene equivalente de
+   * `navigate("..", { relative: "path" })`; `history.back()` sería incorrecto, porque en
+   * un enlace directo se saldría de la aplicación.
+   */
+  closeTo: ListPath;
+}
+
+export default function CoinDetailsDialog({ coinId, closeTo }: CoinDetailsDialogProps) {
   const navigate = useNavigate();
   const { currency } = useMarketsFilters();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
+  /* `coinId` llega tipado como string desde la ruta, así que desaparecen el `?? ""` y
+     el `enabled: Boolean(coinId)` que hacían falta cuando `useParams` devolvía
+     `string | undefined`. */
   const query = useQuery({
     queryKey: ["coin", coinId],
-    queryFn: ({ signal }) => coingecko.coin(coinId ?? "", signal),
-    enabled: Boolean(coinId),
+    queryFn: ({ signal }) => coingecko.coin(coinId, signal),
   });
 
   const close = () => {
-    void navigate("..", { relative: "path" });
+    void navigate({ to: closeTo });
   };
 
   useEffect(() => {

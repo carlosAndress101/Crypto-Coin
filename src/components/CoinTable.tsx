@@ -1,12 +1,22 @@
-import { Link } from "react-router";
+import { Link } from "@tanstack/react-router";
 import { SaveButton } from "@/components/SaveButton";
 import { changeTone, formatCurrency, formatNumber, formatPercent } from "@/lib/format";
 import type { MarketCoin } from "@/types/coingecko";
+import type { CoinDetailPath } from "@/app/paths";
 
 interface CoinTableProps {
   coins: readonly MarketCoin[];
   currency: string;
   caption: string;
+  /**
+   * Ruta de detalle a la que enlaza cada fila.
+   *
+   * Es una prop y no un valor fijo porque la tabla la comparten la vista de mercado y la
+   * de guardados: antes enlazaba siempre a `/{coinId}`, así que abrir una moneda desde
+   * Guardados desmontaba la watchlist y dejaba la lista de mercado detrás del modal.
+   * `CoinTable` vive en `components/` y no puede importar de una feature, de ahí la prop.
+   */
+  detailTo: CoinDetailPath;
 }
 
 const TONE_CLASS = {
@@ -37,7 +47,7 @@ function ChangeCell({
  * `overflow-x-auto` en el contenedor es la red de seguridad: incluso con columnas
  * ocultas, un símbolo largo no debe hacer scrollar la página entera en horizontal.
  */
-export function CoinTable({ coins, currency, caption }: CoinTableProps) {
+export function CoinTable({ coins, currency, caption, detailTo }: CoinTableProps) {
   return (
     <div className="w-full overflow-x-auto rounded border border-line-strong">
       <table className="w-full table-auto">
@@ -82,13 +92,17 @@ export function CoinTable({ coins, currency, caption }: CoinTableProps) {
                   {coin.image && (
                     <img src={coin.image} alt="" className="h-5 w-5" width={20} height={20} />
                   )}
-                  <Link to={`/${coin.id}`} className="uppercase hover:text-accent">
+                  <Link
+                    to={detailTo}
+                    params={{ coinId: coin.id }}
+                    className="uppercase hover:text-accent"
+                  >
                     {coin.symbol}
                   </Link>
                 </div>
               </td>
               <td className="py-4 text-start">
-                <Link to={`/${coin.id}`} className="hover:text-accent">
+                <Link to={detailTo} params={{ coinId: coin.id }} className="hover:text-accent">
                   {coin.name}
                 </Link>
               </td>

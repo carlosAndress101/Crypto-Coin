@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router";
+import { Link, Outlet } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryState } from "@/components/QueryState";
@@ -10,18 +10,16 @@ import type { Trending } from "@/types/coingecko";
 type TrendingItem = Trending["coins"][number]["item"];
 
 function TrendingCard({ coin }: { coin: TrendingItem }) {
-  const navigate = useNavigate();
-
   return (
     /*
-      Antes esto era un <div onClick>: sin foco, sin teclado, invisible para un lector
-      de pantalla. Un <button> lo resuelve de raíz sin añadir handlers de teclado
-      a mano, porque Enter y Espacio ya funcionan de forma nativa.
+      Antes esto era un <div onClick>, y después un <button> con navigate(). Ahora es un
+      <Link>: además del foco y el teclado que ya daba el botón, un enlace real permite
+      abrir en pestaña nueva y clic central, y el destino es tipado contra el árbol de rutas.
     */
-    <button
-      type="button"
-      onClick={() => void navigate(`/trending/${coin.id}`)}
-      className="relative w-[80%] cursor-pointer rounded-lg bg-surface-raised p-4 text-start transition-colors hover:bg-surface-hover sm:w-[60%] lg:w-[40%]"
+    <Link
+      to="/trending/$coinId"
+      params={{ coinId: coin.id }}
+      className="relative block w-[80%] cursor-pointer rounded-lg bg-surface-raised p-4 text-start transition-colors hover:bg-surface-hover sm:w-[60%] lg:w-[40%]"
     >
       <h3 className="flex items-center gap-1.5 py-0.5">
         <span className="text-fg-muted capitalize">Name:</span>
@@ -44,7 +42,7 @@ function TrendingCard({ coin }: { coin: TrendingItem }) {
         <span className="text-fg-muted capitalize">Score: </span>
         <span className="text-accent">{formatNumber(coin.score)}</span>
       </p>
-    </button>
+    </Link>
   );
 }
 

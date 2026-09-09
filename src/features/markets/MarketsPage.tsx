@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { Outlet } from "@tanstack/react-router";
 import { CoinTable } from "@/components/CoinTable";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryState } from "@/components/QueryState";
@@ -25,7 +25,12 @@ export default function MarketsPage() {
           loadingLabel="Loading market data…"
           emptyMessage="No coins matched these filters."
         >
-          <CoinTable coins={coins} currency={currency} caption="Cryptocurrency market data" />
+          <CoinTable
+            coins={coins}
+            currency={currency}
+            caption="Cryptocurrency market data"
+            detailTo="/$coinId"
+          />
         </QueryState>
       </ErrorBoundary>
 
