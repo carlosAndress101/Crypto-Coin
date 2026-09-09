@@ -18,7 +18,8 @@
     "validate": "pnpm check && pnpm build && pnpm smoke",
     "verify": "pnpm validate && pnpm audit --prod",
     "prepare": "husky",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "test:e2e": "pnpm smoke"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.102.8",
@@ -29,6 +30,7 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
     "@tailwindcss/vite": "^4.3.3",
