@@ -19,6 +19,18 @@ interface CoinTableProps {
   detailTo: CoinDetailPath;
 }
 
+/**
+ * Alto que ocupará la tabla, para reservarlo mientras carga.
+ *
+ * Los números están medidos en el navegador, no estimados: 41 px de cabecera y 65 px por
+ * fila, idénticos a 375 px y a 1280 px porque el relleno de las celdas es fijo. Reservar
+ * este hueco es lo que impide que la paginación y el pie peguen un salto cuando llegan los
+ * datos (desplazamiento acumulado de diseño).
+ */
+export function coinTableHeight(rows: number): number {
+  return 41 + rows * 65;
+}
+
 const TONE_CLASS = {
   positive: "text-positive",
   negative: "text-negative",

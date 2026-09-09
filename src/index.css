@@ -4,10 +4,32 @@
 @plugin "tailwind-scrollbar";
 
 /**
- * La fuente se carga desde index.html con preconnect en vez de con @import.
- * Un @import en CSS obliga al navegador a descargar y parsear la hoja antes de
- * descubrir siquiera la petición de la fuente, lo que la pone en la ruta crítica.
+ * Nunito, autoalojada.
+ *
+ * Antes se pedía a Google Fonts con un `<link rel="stylesheet">`, que es una petición
+ * BLOQUEANTE de renderizado a un tercero: Lighthouse la medía en 1.050 ms de retraso del
+ * primer pintado con red móvil simulada. Declarar la @font-face aquí la mete en el CSS que
+ * el navegador ya tiene que descargar de todos modos, así que esa petición desaparece
+ * entera, junto con los dos `preconnect` que hacían falta para amortiguarla.
+ *
+ * Es un único archivo: Google sirve el mismo woff2 para 400, 600 y 700 porque el subconjunto
+ * latino de Nunito es una fuente VARIABLE. 39 kB cubren todo el rango de grosores, menos de
+ * lo que pesaban dos instancias estáticas.
+ *
+ * Efecto colateral que interesa: la aplicación deja de tener dependencias de terceros en la
+ * ruta crítica, lo que simplifica la CSP que falta por escribir.
  */
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/nunito-latin-variable.woff2") format("woff2");
+  /* Solo el subconjunto latino: la interfaz está en inglés. */
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 @layer base {
   body {

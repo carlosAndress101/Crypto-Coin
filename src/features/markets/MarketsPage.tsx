@@ -1,5 +1,5 @@
 import { Outlet } from "@tanstack/react-router";
-import { CoinTable } from "@/components/CoinTable";
+import { CoinTable, coinTableHeight } from "@/components/CoinTable";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryState } from "@/components/QueryState";
 import { Filters } from "@/features/markets/Filters";
@@ -16,23 +16,27 @@ export default function MarketsPage() {
     <section className="relative mt-8 mb-24 flex h-full w-[90%] flex-col gap-6 xs:w-[80%] lg:mt-16">
       <Filters onRefresh={() => void query.refetch()} isFetching={query.isFetching} />
 
-      <ErrorBoundary area="market table">
-        <QueryState
-          isPending={query.isPending}
-          error={query.error}
-          isEmpty={coins.length === 0}
-          onRetry={() => void query.refetch()}
-          loadingLabel="Loading market data…"
-          emptyMessage="No coins matched these filters."
-        >
-          <CoinTable
-            coins={coins}
-            currency={currency}
-            caption="Cryptocurrency market data"
-            detailTo="/$coinId"
-          />
-        </QueryState>
-      </ErrorBoundary>
+      {/* El hueco se reserva SOLO mientras carga: si se dejara puesto, una última página
+          con menos filas de las pedidas arrastraría un relleno vacío debajo. */}
+      <div style={query.isPending ? { minHeight: coinTableHeight(perPage) } : undefined}>
+        <ErrorBoundary area="market table">
+          <QueryState
+            isPending={query.isPending}
+            error={query.error}
+            isEmpty={coins.length === 0}
+            onRetry={() => void query.refetch()}
+            loadingLabel="Loading market data…"
+            emptyMessage="No coins matched these filters."
+          >
+            <CoinTable
+              coins={coins}
+              currency={currency}
+              caption="Cryptocurrency market data"
+              detailTo="/$coinId"
+            />
+          </QueryState>
+        </ErrorBoundary>
+      </div>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-fg-secondary">

@@ -31,12 +31,14 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="%VITE_SITE_URL%/og.jpg" />
 
-    <!-- Preconnect antes de pedir la fuente: ahorra el handshake TLS en la ruta crítica. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- La fuente es propia y se declara en el CSS de la aplicación; aquí solo se adelanta
+         su descarga, que si no el navegador no la descubre hasta parsear la hoja. -->
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/nunito-latin-variable.woff2"
+      crossorigin
     />
   </head>
   <body>

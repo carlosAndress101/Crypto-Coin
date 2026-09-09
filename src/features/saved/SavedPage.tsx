@@ -1,6 +1,6 @@
 import { createLazyRoute, Outlet } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { CoinTable } from "@/components/CoinTable";
+import { CoinTable, coinTableHeight } from "@/components/CoinTable";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryState } from "@/components/QueryState";
 import { RefreshButton } from "@/components/RefreshButton";
@@ -45,23 +45,25 @@ export default function SavedPage() {
           </p>
         </div>
       ) : (
-        <ErrorBoundary area="watchlist">
-          <QueryState
-            isPending={query.isPending}
-            error={query.error}
-            isEmpty={coins.length === 0}
-            onRetry={() => void query.refetch()}
-            loadingLabel="Loading your watchlist…"
-            emptyMessage="We could not load data for your saved coins."
-          >
-            <CoinTable
-              coins={coins}
-              currency={currency}
-              caption="Your saved coins"
-              detailTo="/saved/$coinId"
-            />
-          </QueryState>
-        </ErrorBoundary>
+        <div style={query.isPending ? { minHeight: coinTableHeight(ids.length) } : undefined}>
+          <ErrorBoundary area="watchlist">
+            <QueryState
+              isPending={query.isPending}
+              error={query.error}
+              isEmpty={coins.length === 0}
+              onRetry={() => void query.refetch()}
+              loadingLabel="Loading your watchlist…"
+              emptyMessage="We could not load data for your saved coins."
+            >
+              <CoinTable
+                coins={coins}
+                currency={currency}
+                caption="Your saved coins"
+                detailTo="/saved/$coinId"
+              />
+            </QueryState>
+          </ErrorBoundary>
+        </div>
       )}
 
       <Outlet />
