@@ -50,11 +50,11 @@ verde no significa que el código esté validado.
 
 El dominio existe en **un solo sitio**, `.env.production`, y de ahí se derivan tres cosas:
 
-| Artefacto                                       | Cómo se genera                                                  |
-| ----------------------------------------------- | --------------------------------------------------------------- |
-| Etiquetas `og:url`, `og:image`, `twitter:image` | Sustitución de `%VITE_SITE_URL%` en `index.html`, que hace Vite |
-| `robots.txt`                                    | Lo emite un plugin de `vite.config.ts` durante el build         |
-| `sitemap.xml`                                   | Igual, con las tres rutas reales de la aplicación               |
+| Artefacto                                       | Cómo se genera                                                                                                                                                                                                  |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Etiquetas `og:url`, `og:image`, `twitter:image` | El plugin de `vite.config.ts` sustituye `__SITE_URL__` en `index.html`. Lo hace el plugin y no el mecanismo `%VAR%` de Vite porque ese solo mira el modo actual y en `pnpm dev` dejaba el marcador sin resolver |
+| `robots.txt`                                    | Lo emite un plugin de `vite.config.ts` durante el build                                                                                                                                                         |
+| `sitemap.xml`                                   | Igual, con las tres rutas reales de la aplicación                                                                                                                                                               |
 
 `robots.txt` y `sitemap.xml` **no están en `public/`**: si estuvieran, el dominio viviría
 en tres archivos a la vez y podrían desincronizarse en silencio. Para cambiar de dominio,

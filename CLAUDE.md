@@ -147,7 +147,9 @@ Full detail in `DEPLOYMENT.md`; security decisions in `SECURITY.md`.
 
 - Production domain: `https://crypto-coin-5yz.pages.dev`.
 - `VITE_SITE_URL` is the **single source of truth** for that domain. `og:*` tags come from
-  `%VITE_SITE_URL%` in `index.html`; `robots.txt` and `sitemap.xml` are emitted at build
+  the `__SITE_URL__` placeholder in `index.html`, substituted by the plugin in
+  `vite.config.ts` (not by Vite's `%VAR%` mechanism, which only reads the current mode and
+  left it unresolved in dev); `robots.txt` and `sitemap.xml` are emitted at build
   time by a plugin in `vite.config.ts`. **Neither file exists in `public/`** — do not
   recreate them there, that is the duplication this replaced. A missing `VITE_SITE_URL`
   fails the build on purpose.

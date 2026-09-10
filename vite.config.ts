@@ -18,7 +18,18 @@ import tailwindcss from "@tailwindcss/vite";
 function siteFiles(siteUrl: string): Plugin {
   return {
     name: "cryptosh1f:site-files",
-    apply: "build",
+
+    /*
+     * La sustitución la hace este plugin y no el mecanismo `%VAR%` de Vite a propósito:
+     * ese solo mira las variables del modo actual, así que en `pnpm dev` no encontraba
+     * VITE_SITE_URL —vive en .env.production— y dejaba el marcador literal en las
+     * etiquetas Open Graph, además de imprimir un aviso por cada aparición.
+     */
+    transformIndexHtml(html) {
+      return html.replaceAll("__SITE_URL__", siteUrl);
+    },
+
+    // Solo se ejecuta en build; en desarrollo no hay nada que emitir.
     generateBundle() {
       const robots = [
         "User-agent: *",
@@ -56,7 +67,13 @@ function siteFiles(siteUrl: string): Plugin {
 }
 
 export default defineConfig(({ mode, command }) => {
-  const siteUrl = loadEnv(mode, process.cwd(), "VITE_").VITE_SITE_URL?.replace(/\/+$/, "");
+  /* El dominio vive en un único archivo, `.env.production`. En desarrollo se lee de ahí
+     igualmente: duplicarlo en un `.env.development` sería exactamente la desincronización
+     que este plugin existe para evitar. */
+  const siteUrl = (
+    loadEnv(mode, process.cwd(), "VITE_").VITE_SITE_URL ??
+    loadEnv("production", process.cwd(), "VITE_").VITE_SITE_URL
+  )?.replace(/\/+$/, "");
 
   if (command === "build" && !siteUrl) {
     throw new Error(
@@ -66,7 +83,7 @@ export default defineConfig(({ mode, command }) => {
   }
 
   return {
-    plugins: [react(), tailwindcss(), ...(siteUrl ? [siteFiles(siteUrl)] : [])],
+    plugins: [react(), tailwindcss(), siteFiles(siteUrl ?? "")],
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
