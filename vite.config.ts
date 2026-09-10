@@ -1,14 +1,76 @@
 import { fileURLToPath, URL } from "node:url";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
+import type { Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import tailwindcss from "@tailwindcss/vite";
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
+/**
+ * Emite robots.txt y sitemap.xml a partir de VITE_SITE_URL.
+ *
+ * Antes eran dos archivos estáticos en `public/` con el dominio escrito a mano, o sea
+ * tres copias del mismo dato (los dos archivos más las etiquetas Open Graph de
+ * index.html) que podían desincronizarse en silencio. Ahora el dominio existe en un
+ * único sitio, `.env.production`, y todo lo demás se deriva de ahí.
+ *
+ * Si la variable falta, el build **se detiene**: un sitemap que apunte a localhost
+ * publicado en producción es peor que no tener sitemap.
+ */
+function siteFiles(siteUrl: string): Plugin {
+  return {
+    name: "cryptosh1f:site-files",
+    apply: "build",
+    generateBundle() {
+      const robots = [
+        "User-agent: *",
+        "Allow: /",
+        "",
+        "# El detalle de una moneda es la misma página con un modal encima, así que",
+        "# rastrear /{coinId} para miles de monedas no aporta contenido nuevo.",
+        "Disallow: /*?",
+        "",
+        `Sitemap: ${siteUrl}/sitemap.xml`,
+        "",
+      ].join("\n");
+
+      const pages = [
+        { path: "/", changefreq: "hourly", priority: "1.0" },
+        { path: "/trending", changefreq: "hourly", priority: "0.8" },
+        { path: "/saved", changefreq: "monthly", priority: "0.5" },
+      ];
+
+      const sitemap = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        ...pages.map(
+          ({ path, changefreq, priority }) =>
+            `  <url><loc>${siteUrl}${path}</loc><changefreq>${changefreq}</changefreq><priority>${priority}</priority></url>`,
+        ),
+        "</urlset>",
+        "",
+      ].join("\n");
+
+      this.emitFile({ type: "asset", fileName: "robots.txt", source: robots });
+      this.emitFile({ type: "asset", fileName: "sitemap.xml", source: sitemap });
     },
-  },
+  };
+}
+
+export default defineConfig(({ mode, command }) => {
+  const siteUrl = loadEnv(mode, process.cwd(), "VITE_").VITE_SITE_URL?.replace(/\/+$/, "");
+
+  if (command === "build" && !siteUrl) {
+    throw new Error(
+      "Falta VITE_SITE_URL. Es el dominio del que se derivan las etiquetas Open Graph, " +
+        "robots.txt y sitemap.xml. Defínela en .env.production o en el entorno del build.",
+    );
+  }
+
+  return {
+    plugins: [react(), tailwindcss(), ...(siteUrl ? [siteFiles(siteUrl)] : [])],
+    resolve: {
+      alias: {
+        "@": fileURLToPath(new URL("./src", import.meta.url)),
+      },
+    },
+  };
 });

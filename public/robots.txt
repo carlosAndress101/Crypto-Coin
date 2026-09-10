@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-
-# El detalle de una moneda es la misma página con un modal encima, así que rastrear
-# /{coinId} para miles de monedas no aporta contenido nuevo. Las tres vistas sí.
-Disallow: /*?
-
-Sitemap: https://cryptosh1f.pages.dev/sitemap.xml
