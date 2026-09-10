@@ -535,6 +535,78 @@ try {
     await context.close();
   }
 
+  // ---- 14. La CSP real de producción no bloquea nada de la aplicación ----
+  {
+    /*
+     * La CSP se lee de `dist/_headers`, el archivo que Cloudflare Pages va a servir de
+     * verdad, así que esta comprobación no puede quedarse desincronizada de lo que se
+     * despliega. `vite preview` no aplica _headers —es cosa de Cloudflare—, así que se
+     * inyecta la cabecera interceptando la respuesta del documento.
+     */
+    const headers = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "..", "dist/_headers"),
+      "utf8",
+    );
+    const csp = /^\s*Content-Security-Policy:\s*(.+)$/m.exec(headers)?.[1];
+    check("La CSP existe en dist/_headers", Boolean(csp));
+
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    await page.addInitScript(() => {
+      const violations = [];
+      Object.defineProperty(window, "cspViolations", { get: () => violations });
+      document.addEventListener("securitypolicyviolation", (event) => {
+        violations.push(
+          `${event.violatedDirective} → ${event.blockedURI} (${event.sourceFile ?? "?"})`,
+        );
+      });
+    });
+
+    // Se registra antes que las rutas de CoinGecko: Playwright da prioridad a la última.
+    await page.route(
+      (url) => url.origin === BASE && !url.pathname.startsWith("/assets/"),
+      async (route) => {
+        const response = await route.fetch();
+        await route.fulfill({
+          response,
+          headers: { ...response.headers(), "content-security-policy": csp ?? "" },
+        });
+      },
+    );
+    await installRoutes(page);
+
+    const violations = [];
+    for (const path of ["/", "/trending", "/saved"]) {
+      await page.goto(`${BASE}${path}`, { waitUntil: "networkidle" });
+      violations.push(...(await page.evaluate(() => window.cspViolations)));
+    }
+
+    // El diálogo es el caso difícil: arrastra Recharts, que pinta con estilos en línea.
+    await page.goto(`${BASE}/bitcoin`, { waitUntil: "networkidle" });
+    await page.locator("dialog[open]").waitFor({ timeout: 5000 });
+    await page.waitForTimeout(800);
+    violations.push(...(await page.evaluate(() => window.cspViolations)));
+
+    check(
+      "La CSP no bloquea nada en las tres vistas ni en el modal",
+      violations.length === 0,
+      [...new Set(violations)].join(" | "),
+    );
+    /* Se mide en un elemento real y no en <body>: la clase `font-nunito` está en el
+       contenedor del layout, no en el body, así que medir ahí daría siempre la fuente
+       de reserva y la comprobación no probaría nada. */
+    check(
+      "Con la CSP puesta, la fuente propia se aplica",
+      await page.evaluate(() => {
+        const heading = document.querySelector("dialog[open] h2, nav a");
+        return heading !== null && getComputedStyle(heading).fontFamily.includes("Nunito");
+      }),
+    );
+    check("Y el gráfico se dibuja", (await page.locator("dialog[open] svg").count()) > 0);
+    await context.close();
+  }
+
   await browser.close();
 } finally {
   server.kill("SIGTERM");

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { useSearch } from "@tanstack/react-router";
 import { DEFAULT_CURRENCY, normalizeCurrency } from "@/lib/format";
 

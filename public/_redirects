@@ -1,0 +1,6 @@
+# Fallback de aplicación de una sola página.
+#
+# Sin esto, un enlace directo a /saved/bitcoin o /trending devuelve 404: en Cloudflare
+# Pages esas rutas no son archivos, solo existen dentro del router del cliente. El 200
+# (y no un 301) es lo que mantiene la URL intacta para que el router la lea.
+/*  /index.html  200
