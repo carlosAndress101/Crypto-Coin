@@ -17,7 +17,7 @@ pnpm lint           # oxlint
 pnpm lint:fix       # oxlint --fix
 pnpm format         # oxfmt .
 pnpm format:check   # oxfmt --check .
-pnpm contrast       # WCAG check over the design tokens
+pnpm contrast       # WCAG contrast + every var(--color-*) resolves
 pnpm smoke          # 45 end-to-end checks in Chromium (alias: pnpm test:e2e)
 pnpm icons          # regenerate brand PNGs from public/favicon.svg
 
@@ -109,14 +109,66 @@ what fixed the app's original infinite spinner. `queryClient.ts` never retries a
   (`CurrencyField`, `PerPageField`). That is what keeps them in sync when the browser Back
   button changes the URL.
 - Colours come from semantic tokens in `src/styles/theme.css` (`bg-surface-raised`, never
-  `bg-neutral-800`). `pnpm contrast` reads that file directly, so it cannot drift.
+  `bg-neutral-800`). `pnpm contrast` reads that file directly, so it cannot drift, and it
+  also fails if any `var(--color-*)` or `var(--font-*)` in the codebase is undefined — that
+  bug shipped once (`--color-text-primary`, which never existed).
+- **Import `z` from `@/lib/zod`, never from `"zod"`.** That module sets `jitless: true`,
+  which keeps Zod off its `Function("")` path and therefore off a CSP violation. Zod reads
+  the flag when a schema is _constructed_, so the import graph is what enforces the order.
 - Only `sm`, `lg` and a custom `xs` (30rem) breakpoint are in use.
 - Brand assets: `src/components/BrandMark.tsx` is the SVG mark using theme tokens;
   `public/favicon.svg` is the same drawing with raw hex. Change both together, then run
   `pnpm icons`.
 
+## OXC tooling
+
+**oxlint** for correctness, **oxfmt** for formatting. No ESLint, no Prettier — neither is
+installed and neither is coming back. `oxfmt` is pinned to an exact version (no `^`)
+because it is pre-1.0 and a minor bump would reformat the repository on its own.
+
+Config is `.oxlintrc.json`: plugins `react`, `import`, `jsx-a11y`, `unicorn`, `promise`,
+`oxc`; `correctness` and `suspicious` as errors; `perf` as warnings. `pnpm lint` is at
+**0 errors, 0 warnings** — keep it there.
+
+There are exactly two rule overrides, both scoped to `scripts/**` and both with the reason
+written in the config: `no-console` (a CLI script's stdout _is_ its output) and
+`no-await-in-loop` (the sequential awaits drive a browser and poll a server; parallelising
+them breaks what they do). **Do not add global rule disables.** If a rule fights `src/`,
+fix the code.
+
+Husky runs lint-staged on commit and commitlint on the message. The lint-staged glob is
+`*.{js,cjs,mjs,jsx,ts,mts,cts,tsx}` — it used to miss `.mjs`, which let a lint error slip
+into a commit. Never use `git commit --no-verify`.
+
 ## Deployment
 
-Target is Cloudflare Pages. **Not yet configured** — there is no `_headers`, no
-`_redirects` and no CI workflow. `.env.production` carries a **placeholder**
-`VITE_SITE_URL` that must be changed to the real domain before the first deploy.
+Target is **Cloudflare Pages**, connected to the GitHub repo (no workflow file needed).
+Full detail in `DEPLOYMENT.md`; security decisions in `SECURITY.md`.
+
+- Production domain: `https://crypto-coin-5yz.pages.dev`.
+- `VITE_SITE_URL` is the **single source of truth** for that domain. `og:*` tags come from
+  `%VITE_SITE_URL%` in `index.html`; `robots.txt` and `sitemap.xml` are emitted at build
+  time by a plugin in `vite.config.ts`. **Neither file exists in `public/`** — do not
+  recreate them there, that is the duplication this replaced. A missing `VITE_SITE_URL`
+  fails the build on purpose.
+- `public/_headers` carries the CSP and friends. `public/_redirects` carries
+  `/* /index.html 200`; without it every deep link 404s in production.
+- `vite preview` applies **neither** of those files (they are Cloudflare's). That is why the
+  CSP smoke check reads the policy out of `dist/_headers` and injects it itself.
+- **There is no CI.** Cloudflare runs `pnpm build` only — no typecheck, no lint, no tests. A
+  green deploy does not mean the code was validated.
+
+## Release workflow
+
+1. `pnpm validate` green, plus `pnpm audit --prod`.
+2. `CHANGELOG.md` updated: breaking changes and user-visible behaviour changes stated
+   explicitly, not implied.
+3. One commit per revertible unit, Conventional Commits, no `--no-verify`.
+4. Branch → PR against `master` with validation evidence in the body. Never merge without it.
+5. Merge with a merge commit, **not** a squash: the per-commit split exists so
+   `git revert <sha>` can isolate one change. Squashing throws that away.
+6. Tag `vX.Y.Z` on `master` after the merge. **No tags exist yet**; `package.json` is at
+   `0.2.0` and nothing has been published, so the first tag is a decision still open.
+7. Cloudflare deploys on push to `master`. Run the post-deploy checklist in
+   `DEPLOYMENT.md` — several things (real CSP headers, real CoinGecko image host, deep
+   links) can only be verified once it is live.

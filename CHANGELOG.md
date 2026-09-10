@@ -9,6 +9,51 @@ versionado según [SemVer](https://semver.org/lang/es/).
 
 ---
 
+## [Sin publicar] — Endurecimiento previo a la primera release
+
+Cierra los huecos de producción que quedaban abiertos tras la modernización. No cambia
+comportamiento visible de la aplicación.
+
+### Corregido
+
+- **Token CSS inexistente.** `src/index.css` fijaba el color del body en
+  `var(--color-text-primary)`, que nunca existió en `@theme`. CSS no avisa de eso y el
+  fallo era invisible porque cada componente fija su propio color de texto.
+- **`pnpm lint` reportaba 10 avisos**, todos `no-await-in-loop` en `scripts/`. Ahora está
+  en 0 errores y 0 avisos, con la regla desactivada **solo** para esa carpeta y el motivo
+  escrito caso por caso. `src/` mantiene todas las reglas.
+
+### Añadido
+
+- **`public/_headers`**: CSP, HSTS, `Referrer-Policy`, `X-Content-Type-Options`,
+  `X-Frame-Options`, `Permissions-Policy` y políticas de origen cruzado, más cacheado
+  inmutable para los assets con hash y revalidación para el HTML. Cada decisión está
+  justificada en `SECURITY.md`.
+- **`public/_redirects`** con el fallback de aplicación de una sola página. Sin él, un
+  enlace directo a `/saved/bitcoin` devolvía **404** en producción. No estaba en el informe
+  de auditoría, pero rompería los mismos enlaces profundos que la suite de humo verifica.
+- **`SECURITY.md`** y **`DEPLOYMENT.md`**, que no existían.
+- `pnpm contrast` comprueba además que todo `var(--color-*)` y `var(--font-*)` usado esté
+  declarado en `@theme`. Verificado reintroduciendo el fallo a mano.
+- Tres comprobaciones de humo (49 en total) que leen la CSP de `dist/_headers`, la inyectan
+  en el navegador y verifican cero violaciones en las tres vistas y en el modal, que la
+  tipografía propia se aplica y que el gráfico se dibuja.
+
+### Cambiado
+
+- **`robots.txt` y `sitemap.xml` se generan en el build a partir de `VITE_SITE_URL`.**
+  Antes eran archivos estáticos con el dominio escrito a mano, o sea tres copias del mismo
+  dato que podían desincronizarse. Se eliminan de `public/`. Si la variable falta, el build
+  se detiene.
+- **Dominio de producción fijado**: `https://crypto-coin-5yz.pages.dev`. Ya no hay
+  marcadores de posición.
+- **`z` se importa de `@/lib/zod`, no de `"zod"`.** Ese módulo activa `jitless: true`. Zod 4
+  compila validadores con `Function("")` y lo detecta probándolo dentro de un `try/catch`:
+  bajo la CSP la prueba falla, Zod cae al camino interpretado y todo funciona, pero el
+  intento disparaba una violación de CSP en cada carga. Vive en su propio módulo porque Zod
+  lee la bandera al **construir** el esquema, no al validar.
+- `CLAUDE.md` documenta ya el stack OXC, el despliegue real y el flujo de release.
+
 ## [0.2.0] — 2026-09-09 — TanStack Router, identidad de marca
 
 ### Cambiado
