@@ -68,11 +68,26 @@
 
   "overrides": [
     {
-      /* Los scripts de CLI escriben en stdout: ahí console.log ES la salida del
-         programa, no un resto de depuración. */
+      /* Los scripts de `scripts/` son herramientas de línea de comandos que se ejecutan
+         una vez y terminan, no código de aplicación. Las dos excepciones de abajo son las
+         únicas del repositorio y aplican SOLO a esta carpeta: `src/` mantiene las reglas
+         completas. */
       "files": ["scripts/**"],
       "rules": {
-        "no-console": "off"
+        /* Un script de CLI comunica por stdout: ahí console.log ES la salida del programa,
+           no un resto de depuración olvidado. */
+        "no-console": "off",
+
+        /* Los `await` dentro de bucles son secuenciales A PROPÓSITO y paralelizarlos
+           rompería lo que hacen:
+             - smoke.mjs sondea el servidor de preview hasta que responde; con Promise.all
+               se lanzarían las 40 peticiones de golpe en vez de esperar a que arranque.
+             - smoke.mjs conduce un navegador: navegar, medir y cerrar página tienen que
+               ocurrir en ese orden, y dos páginas en paralelo compartirían la misma
+               watchlist en localStorage y se pisarían entre ellas.
+             - build-icons.mjs rasteriza iconos uno a uno; tres Chromium simultáneos
+               gastarían más memoria para ahorrar milisegundos en un script manual. */
+        "no-await-in-loop": "off"
       }
     }
   ],

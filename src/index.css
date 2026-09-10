@@ -34,7 +34,7 @@
 @layer base {
   body {
     background-color: var(--color-surface-base);
-    color: var(--color-text-primary);
+    color: var(--color-fg);
   }
 
   /* Foco visible y consistente en todo lo interactivo. El navegador solo lo pinta

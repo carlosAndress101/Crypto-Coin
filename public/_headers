@@ -1,0 +1,27 @@
+# Cabeceras de Cloudflare Pages. Formato: una ruta, y debajo las cabeceras indentadas.
+# Las decisiones y sus motivos están en SECURITY.md.
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://coin-images.coingecko.com https://assets.coingecko.com; font-src 'self'; connect-src 'self' https://api.coingecko.com; manifest-src 'self'; form-action 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), usb=(), xr-spatial-tracking=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+
+# Los nombres de los assets llevan hash de contenido, así que un cambio produce un
+# nombre nuevo: se pueden cachear para siempre sin riesgo de servir algo obsoleto.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# El HTML es lo único que no lleva hash: es el que dice qué assets pedir, así que tiene
+# que revalidarse en cada carga o un despliegue nuevo no llegaría nunca.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate

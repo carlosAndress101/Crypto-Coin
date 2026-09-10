@@ -8,7 +8,7 @@
  *
  *   node scripts/check-contrast.mjs
  */
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -110,7 +110,47 @@ for (const r of rows) {
 
 console.log(`\n${rows.length - failed}/${rows.length} pares cumplen WCAG 2.2 AA.`);
 
+/**
+ * Segunda comprobación: que todo `var(--color-*)` y `var(--font-*)` que aparezca en el
+ * código esté definido en el bloque @theme.
+ *
+ * Existe porque ya pasó: `src/index.css` puso el color del body en
+ * `var(--color-text-primary)`, un token que nunca existió. CSS no avisa de eso —una
+ * variable sin definir simplemente no aplica nada— y el fallo era invisible porque cada
+ * componente fija su propio color de texto. Solo se notaba si alguno dejaba de hacerlo.
+ *
+ * Se limitan los prefijos a `--color-` y `--font-` a propósito: Tailwind genera sus
+ * propias variables (`--tw-*`, espaciado, etc.) que no salen de este archivo.
+ */
+const CHECKED_PREFIXES = /^--(?:color|font)-/;
+
+function sourceFiles(dir) {
+  return readdirSync(dir, { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile() && /\.(?:css|tsx?|html)$/.test(entry.name))
+    .map((entry) => join(entry.parentPath, entry.name));
+}
+
+const declared = new Set([...css.matchAll(/(--[a-z0-9-]+):/g)].map(([, name]) => name));
+
+const unresolved = [];
+for (const file of [...sourceFiles(join(root, "src")), join(root, "index.html")]) {
+  const content = readFileSync(file, "utf8");
+  for (const [, name] of content.matchAll(/var\((--[a-z0-9-]+)/g)) {
+    if (CHECKED_PREFIXES.test(name) && !declared.has(name)) {
+      unresolved.push(`${file.replace(`${root}/`, "")}: ${name}`);
+    }
+  }
+}
+
+if (unresolved.length > 0) {
+  console.error(`\n✗ ${unresolved.length} token(es) usados pero no definidos en @theme:`);
+  for (const item of new Set(unresolved)) console.error(`    ${item}`);
+  failed++;
+} else {
+  console.log(`✓ Todos los tokens --color-* y --font-* usados están definidos en @theme.`);
+}
+
 if (failed > 0) {
-  console.error(`\n${failed} par(es) por debajo del umbral.`);
+  console.error(`\n${failed} comprobación(es) fallida(s).`);
   process.exit(1);
 }
