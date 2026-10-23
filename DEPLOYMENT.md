@@ -25,7 +25,7 @@ Variables de entorno del build:
 | Variable        | Valor                               | Ámbito               |
 | --------------- | ----------------------------------- | -------------------- |
 | `VITE_SITE_URL` | `https://crypto-coin-5yz.pages.dev` | Production y Preview |
-| `NODE_VERSION`  | `22.22.0`                           | Production y Preview |
+| `NODE_VERSION`  | `22.23.4`                           | Production y Preview |
 
 `NODE_VERSION` tiene que ir explícita: Cloudflare no lee `.nvmrc`, y `package.json` exige
 `node >= 22.22.0`. Cloudflare detecta pnpm por el `pnpm-lock.yaml`; el `packageManager`
